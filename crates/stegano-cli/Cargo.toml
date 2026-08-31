@@ -1,0 +1,28 @@
+[package]
+name = "stegano-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "SteganoHero command-line interface"
+
+[[bin]]
+name = "stegano"
+path = "src/main.rs"
+
+[dependencies]
+stegano-core = { path = "../stegano-core" }
+# The file layer (inspect/clean over real documents). Surfaces sit above files
+# and core; a path dep with no heavy or external crate beyond it.
+stegano-files = { path = "../stegano-files" }
+base64.workspace = true
+clap.workspace = true
+hostname.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+serde_json.workspace = true

@@ -1,0 +1,1595 @@
+/* ============================================================
+   SteganoHero, desktop interface
+   ------------------------------------------------------------
+   Colour rule: a surface token never travels alone. Every
+   --surface-X has exactly one --text-on-X, and any rule that
+   paints --surface-X also sets colour to --text-on-X. The
+   guardrail test "surface_tokens_are_never_used_alone" fails
+   the build if a rule breaks that.
+
+   Verified contrast ratios are listed next to each pair. They
+   are recomputed from these hex values by the guardrail test
+   "contrast_pairs_meet_their_targets", so the numbers cannot
+   drift away from the palette. The certified pairs keep their
+   exact values; the visual system layers depth, motion and
+   rhythm on top of them with decorative tokens that carry no
+   foreground text.
+   ============================================================ */
+
+/* ─── Root palette: the dark theme, complete, on bare :root ── */
+/* Dark is the ROOT theme. The general background is #150c26, the
+   logo's own background, so the logo blends with no visible frame.
+   Brand accents, borders and focus rings are drawn from the brand
+   gradient (indigo #6f63d8 to magenta #ed30b3). The light theme is
+   NOT a second palette: it is a chromatic-inversion filter applied
+   to the app root, defined after this block. Every certified pair
+   below is recomputed from these hex values by the guardrail test
+   "contrast_pairs_meet_their_targets", once as authored (dark) and
+   once pushed through that filter (light), so both themes are
+   proven, never assumed. */
+
+:root {
+  /* Surfaces and their paired foregrounds */
+  --surface-page: #150C26;
+  --text-on-page: #ECE9F6;            /* 15.78:1 */
+  --text-muted-on-page: #A79FC6;      /*  7.57:1 */
+  --border-on-page: #938BC2;          /*  6.03:1 */
+
+  --surface-panel: #1E1440;
+  --text-on-panel: #ECE9F6;           /* 14.28:1 */
+  --text-muted-on-panel: #ABA3C9;     /*  7.17:1 */
+  --border-on-panel: #968EC5;         /*  5.67:1 */
+  --link-on-panel: #B7A6FF;           /*  8.06:1 */
+
+  --surface-raised: #2A1E52;
+  --text-on-raised: #ECE9F6;          /* 12.48:1 */
+  --text-muted-on-raised: #B4ACD2;    /*  6.95:1 */
+  --border-on-raised: #9C94CB;        /*  5.34:1 */
+
+  --surface-field: #100A22;           /* recessed below the page, so inputs read as wells */
+  --text-on-field: #ECE9F6;           /* 16.13:1 */
+  --border-on-field: #938BC2;         /*  6.17:1 */
+
+  --surface-accent: #5A43C4;
+  --text-on-accent: #FFFFFF;          /*  6.92:1 */
+
+  --surface-success: #123524;
+  --text-on-success: #7EE0AC;         /*  8.42:1 */
+
+  --surface-warning: #33260F;
+  --text-on-warning: #F2C368;         /*  8.97:1 */
+
+  --surface-danger: #3A1A26;
+  --text-on-danger: #F49EB6;          /*  7.68:1 */
+
+  --surface-info: #172A44;
+  --text-on-info: #8FC6EE;            /*  7.91:1 */
+
+  /* Non-text colours. No foreground ever sits on these. Focus, accent
+     and meter are drawn from the brand gradient's indigo end, which
+     keeps 3:1 on both the dark root and its inverted light form. */
+  --focus-ring: #A98DFF;
+  --accent-line: #9B87FF;
+  --meter-track: #2A1E52;
+  --meter-fill: #B57BFF;              /*  5.15:1 against the track */
+
+  /* Decorative layer. Tints, dividers, gradients and shadows.
+     None of these ever carries body text, so none needs a
+     certified contrast ratio; where a tint sits behind text the
+     text keeps its own surface pairing and the tint stays low. */
+  --card-border: rgba(255, 255, 255, 0.09);
+  --divider: rgba(255, 255, 255, 0.08);
+  --tint-accent: rgba(155, 135, 255, 0.12);
+  --tint-accent-strong: rgba(155, 135, 255, 0.20);
+  --brand-grad-a: #6F63D8;
+  --brand-grad-b: #ED30B3;
+  --backdrop-glow: rgba(111, 99, 216, 0.12);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 4px 10px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.45), 0 12px 28px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.50), 0 28px 56px rgba(0, 0, 0, 0.55);
+  --shadow-focus: 0 0 0 3px rgba(169, 141, 255, 0.35);
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* Type scale */
+  --font-ui: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 23px;
+  --text-2xl: 30px;
+  --tracking-tight: -0.014em;
+  --tracking-wide: 0.08em;
+
+  /* Motion. Short, transform and opacity first, natural easing. */
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --motion-slow: 250ms;
+  --ease-entrance: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 0.9, 0.6);
+}
+
+/* ─── Light theme: a chromatic inversion of the root ──────── */
+/* The light theme is not a second palette. It is the filter
+   invert(1) hue-rotate(180deg) applied to the whole app root,
+   which flips the dark root to light while keeping brand hues.
+   Because the app background AND the logo background are both
+   #150c26, the same filter sends both to the same light colour,
+   so the logo still blends and no transparent-background asset
+   is needed. Two routes reach it and both apply the identical
+   filter: an explicit light choice, and the system preference
+   when no explicit dark choice overrides it. The guard
+   "the_two_light_routes_apply_the_same_filter" pins that, and
+   "contrast_pairs_meet_their_targets" recomputes every certified
+   pair through this exact transform so the light theme is proven,
+   never assumed. If this filter string changes, that guard's
+   modelled transform must change with it. */
+
+:root[data-theme="light"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+/* ─── Reset ───────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  position: relative;
+  background: var(--surface-page);
+  color: var(--text-on-page);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* A quiet backdrop: two soft accent glows that give the flat page
+   depth without competing with content. Fixed, non-interactive. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 100% 0%, var(--backdrop-glow), transparent 70%),
+    radial-gradient(50% 45% at 0% 100%, var(--backdrop-glow), transparent 70%);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Selected text takes a brand tint. It is a translucent wash, so the
+   selected text keeps its own foreground and stays legible. */
+::selection {
+  background: var(--tint-accent-strong);
+}
+
+/* ─── Shell ───────────────────────────────────────────────── */
+
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  height: 100%;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-2);
+  z-index: 20;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-accent);
+  color: var(--text-on-accent);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-200%);
+  transition: transform var(--motion-fast) var(--ease-entrance);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ─── Masthead ────────────────────────────────────────────── */
+
+/* The masthead is painted with the page colour, not the panel, so the
+   logo's own #150c26 background is pixel-identical to the surface behind
+   it and the mark blends with no visible frame. The same holds in the
+   light theme: the inversion filter maps both to the same light colour. */
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface-page);
+  color: var(--text-on-page);
+  border-bottom: 1px solid var(--divider);
+}
+
+/* The brand holds a single fixed-size mark now, not truncatable text, so it
+   must not shrink: a shrinking flex item would squeeze the logo and distort
+   the square source. flex: none keeps it at the logo's own width. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+}
+
+/* The logo carries the shield and the wordmark, so it replaces the former
+   inline shield and the app-name and tagline text. It is a large square
+   asset bounded by height: the height is set so the two-line wordmark under
+   the shield stays legible in the masthead, and width is auto so the square
+   source keeps its aspect ratio and is never distorted. Its background is the
+   page colour so no frame is visible, in both themes. Its accessible name
+   comes from the i18n layer (data-i18n-aria-label), never a raw literal. */
+.brand-logo {
+  display: block;
+  height: 112px;
+  width: auto;
+  flex: none;
+}
+
+.masthead-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.control-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted-on-panel);
+}
+
+/* ─── Tabs ────────────────────────────────────────────────── */
+
+.tabstrip {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-6) 0;
+  background: var(--surface-panel);
+  color: var(--text-on-panel);
+  border-bottom: 1px solid var(--divider);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabstrip::-webkit-scrollbar {
+  height: 0;
+}
+
+.tab {
+  position: relative;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted-on-panel);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + 3px);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--motion-fast) var(--ease-entrance),
+    background-color var(--motion-fast) var(--ease-entrance);
+}
+
+.tab::after {
+  content: "";
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  /* The active-tab indicator carries the brand gradient. It is a thin bar
+     with no text over it, so the full indigo-to-magenta run is safe. */
+  background: linear-gradient(90deg, var(--brand-grad-a), var(--brand-grad-b));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--motion-base) var(--ease-entrance);
+}
+
+.tab:hover {
+  color: var(--text-on-panel);
+  background: var(--tint-accent);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--link-on-panel);
+  background: var(--tint-accent);
+}
+
+.tab[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+/* ─── Workspace ───────────────────────────────────────────── */
+
+.workspace {
+  position: relative;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  scroll-behavior: smooth;
+}
+
+.panel-stack {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ─── Workbench, a responsive two-column layout ───────────── */
+/* Used by Compose: the composition inputs on the left, the capacity
+   readout, primary action and result on the right. A single column on
+   narrow viewports, two columns once there is room, with the side rail
+   kept in view while a long cover text is edited. */
+
+.workbench {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: var(--space-5);
+}
+
+.workbench-main,
+.workbench-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+@media (min-width: 940px) {
+  .workbench {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  }
+
+  .workbench-side {
+    position: sticky;
+    top: var(--space-1);
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ─── Status bar ──────────────────────────────────────────── */
+
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-6);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  border-top: 1px solid var(--divider);
+  font-size: var(--text-xs);
+}
+
+.statusbar-spacer {
+  margin-left: auto;
+}
+
+.statusbar-muted {
+  color: var(--text-muted-on-raised);
+}
+
+#status-message {
+  font-weight: 600;
+}
+
+/* ─── Views ───────────────────────────────────────────────── */
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: enter-view var(--motion-slow) var(--ease-entrance) both;
+}
+
+@keyframes enter-view {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.view-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--divider);
+}
+
+.view-title {
+  position: relative;
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  padding-left: var(--space-4);
+}
+
+.view-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.14em;
+  bottom: 0.14em;
+  width: 4px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(var(--brand-grad-a), var(--brand-grad-b));
+}
+
+.view-intro {
+  color: var(--text-muted-on-page);
+  font-size: var(--text-sm);
+  max-width: 74ch;
+}
+
+/* ─── Cards ───────────────────────────────────────────────── */
+
+.card {
+  background: var(--surface-panel);
+  color: var(--text-on-panel);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* A result card reads as an output: a leading accent edge, a
+   little more lift, and its own reveal. */
+.card--result {
+  border-left: 3px solid var(--accent-line);
+  box-shadow: var(--shadow-md);
+  animation: enter-result var(--motion-slow) var(--ease-entrance) both;
+}
+
+@keyframes enter-result {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.994);
+  }
+}
+
+/* A result nested inside another card (identity, verify) stays
+   calm: no double lift, just the accent edge. */
+.card .card--result {
+  box-shadow: var(--shadow-xs);
+}
+
+/* The control surface: a quiet accent wash marks the panel that holds
+   the capacity readout and the primary action, so the place to act is
+   legible before the result exists. The wash is a decorative tint over
+   the panel; the panel keeps its own paired foreground. */
+.card--control {
+  background:
+    linear-gradient(var(--tint-accent), var(--tint-accent)),
+    var(--surface-panel);
+  color: var(--text-on-panel);
+}
+
+.card--control .btn-row {
+  margin-top: var(--space-1);
+}
+
+.card--control .btn--primary {
+  flex: 1 1 auto;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.card-title {
+  position: relative;
+  font-size: var(--text-lg);
+  font-weight: 660;
+  letter-spacing: var(--tracking-tight);
+}
+
+.card-hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted-on-panel);
+  max-width: 80ch;
+}
+
+.card-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+  align-items: center;
+}
+
+/* The per-panel export format picker: a compact control that sits inline with the
+   small result actions, so every result offers a format to download alongside its
+   copy button. */
+.export-select {
+  width: auto;
+  min-width: 5.5rem;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+/* One MCP client row in the Rest/mcp tab: a name, its state badges, and either
+   its config path or the snippet to paste. */
+.mcp-client {
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
+}
+.mcp-client:first-child {
+  border-top: none;
+}
+.mcp-client-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.mcp-client-name {
+  font-weight: 600;
+}
+.mcp-client-mode {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.mcp-client-path {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  word-break: break-all;
+  margin-top: var(--space-1);
+}
+
+/* ─── Module grid ─────────────────────────────────────────── */
+/* Each capability is a self-contained frame: its inputs, options,
+   action, and its own inline result live together in one card. The
+   frames sit side by side on a wide viewport and stack only when a
+   column can no longer hold its minimum width. */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* A grid child must be allowed to shrink below its content width, or a
+   long unbroken value would force the whole column wider. */
+.module {
+  min-width: 0;
+}
+
+/* A heading band that spans the full grid, so a set of related frames
+   reads as one group above them. */
+.module-group-head {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.module-group-title {
+  font-size: var(--text-lg);
+  font-weight: 660;
+  letter-spacing: var(--tracking-tight);
+}
+
+.module-group-intro {
+  font-size: var(--text-sm);
+  color: var(--text-muted-on-page);
+  max-width: 74ch;
+}
+
+/* ─── Fields ──────────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field-label {
+  font-size: var(--text-sm);
+  font-weight: 640;
+}
+
+.field-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted-on-panel);
+  max-width: 80ch;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+textarea,
+input[type="text"],
+input[type="password"],
+select {
+  width: 100%;
+  font: inherit;
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-on-field);
+  background: var(--surface-field);
+  color: var(--text-on-field);
+  transition: border-color var(--motion-fast) var(--ease-entrance),
+    box-shadow var(--motion-fast) var(--ease-entrance);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+textarea.is-output {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  min-height: 180px;
+  line-height: 1.55;
+}
+
+textarea:hover,
+input:hover,
+select:hover {
+  border-color: var(--focus-ring);
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: var(--shadow-focus);
+}
+
+select {
+  cursor: pointer;
+}
+
+/* Checkboxes pick up the accent so selection colour is consistent. */
+input[type="checkbox"] {
+  accent-color: var(--accent-line);
+}
+
+/* The density slider fills its field and takes the same accent, so no new
+   colour token is introduced for it. */
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent-line);
+}
+
+/* ─── File-import affordance ───────────────────────────────────
+   A reusable pattern: a text input frame that also accepts a file. When a
+   file is dropped or picked, the frame is covered by an overlay naming the
+   file, and the file becomes the input. No new colour token: the overlay is a
+   raised surface with its own paired foreground, and the drag state borrows
+   the existing focus ring. */
+
+.file-frame {
+  position: relative;
+}
+
+/* The overlay sits over the whole frame and reads as a raised card, so a
+   loaded file looks like the input, not an annotation of it. */
+.file-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+  animation: enter-result var(--motion-base) var(--ease-entrance) both;
+}
+
+.file-overlay-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.file-overlay-name {
+  font-weight: 640;
+  word-break: break-word;
+}
+
+.file-overlay-ext {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-accent);
+  color: var(--text-on-accent);
+}
+
+/* While a file is dragged over the frame, the existing focus ring marks it as
+   the drop target. A box-shadow carries no text, so no foreground is needed. */
+.file-frame[data-dragover="true"] {
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-focus);
+}
+
+.file-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* ─── Progress ─────────────────────────────────────────────────
+   An indeterminate bar for an output frame that is working. It animates only
+   transform, never a layout property, and it is held still under reduced
+   motion (see the reduced-motion block), so both motion guardrails stay green.
+   It reuses the meter track and fill tokens, so no new colour token appears. */
+
+.progress {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--meter-track);
+  overflow: hidden;
+}
+
+.progress-bar {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--meter-fill);
+  transform: translateX(-120%);
+  animation: progress-slide 1.1s var(--ease-entrance) infinite;
+}
+
+@keyframes progress-slide {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(320%);
+  }
+}
+
+/* ─── Buttons ─────────────────────────────────────────────── */
+
+.btn {
+  position: relative;
+  appearance: none;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 640;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-on-panel);
+  background: var(--surface-panel);
+  color: var(--text-on-panel);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform var(--motion-fast) var(--ease-entrance),
+    box-shadow var(--motion-fast) var(--ease-entrance),
+    border-color var(--motion-fast) var(--ease-entrance);
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-entrance);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--focus-ring);
+}
+
+.btn:hover::after {
+  opacity: 0.06;
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled::after {
+  opacity: 0;
+}
+
+/* The primary action carries the brand gradient. The white label sits over
+   the indigo-to-mid region of the gradient, which keeps 4.5:1; the pure
+   magenta end is a corner accent that carries no text. The solid
+   --surface-accent (white 6.92:1) remains the certified accent pairing and
+   still backs the skip link and the pressed segmented control. */
+.btn--primary {
+  background: linear-gradient(135deg, var(--brand-grad-a), var(--brand-grad-b));
+  color: var(--text-on-accent);
+  border-color: var(--brand-grad-b);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Darken the primary on hover rather than veiling it in white,
+   so its white label keeps its contrast. */
+.btn--primary::after {
+  background: #06121F;
+}
+
+.btn--primary:hover::after {
+  opacity: 0.16;
+}
+
+.btn--quiet {
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  border-color: var(--border-on-raised);
+}
+
+.btn--small {
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+}
+
+.btn-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ─── Segmented control ───────────────────────────────────── */
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-on-raised);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+}
+
+.segmented button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted-on-raised);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 640;
+  padding: var(--space-1) var(--space-3);
+  border-radius: calc(var(--radius-sm) - 3px);
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-entrance),
+    background-color var(--motion-fast) var(--ease-entrance),
+    box-shadow var(--motion-fast) var(--ease-entrance);
+}
+
+.segmented button:hover {
+  color: var(--text-on-raised);
+  background: var(--tint-accent);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--surface-accent);
+  color: var(--text-on-accent);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ─── Carrier and assertion chips ─────────────────────────── */
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+/* A tighter grid for the short mission options, which need less room than a
+   carrier chip with its meter and notes. */
+.chip-grid--compact {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.chip {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  background: var(--surface-panel);
+  color: var(--text-on-panel);
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-entrance),
+    box-shadow var(--motion-fast) var(--ease-entrance),
+    border-color var(--motion-fast) var(--ease-entrance),
+    background-color var(--motion-fast) var(--ease-entrance);
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--focus-ring);
+}
+
+/* The attribute is set by the interface; the :has() rule is the same state
+   expressed structurally, so selection stays visible either way. */
+.chip[data-checked="true"] {
+  background: var(--surface-info);
+  color: var(--text-on-info);
+  border-color: var(--accent-line);
+}
+
+.chip:has(input:checked) {
+  background: var(--surface-info);
+  color: var(--text-on-info);
+  border-color: var(--accent-line);
+}
+
+.chip input {
+  margin: 3px 0 0;
+  accent-color: var(--accent-line);
+}
+
+.chip-name {
+  font-weight: 640;
+  font-size: var(--text-sm);
+}
+
+.chip-note {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+}
+
+.chip-meter {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+}
+
+/* ─── Meter ───────────────────────────────────────────────── */
+
+.meter {
+  flex: 1;
+  height: 6px;
+  min-width: 60px;
+  border-radius: var(--radius-pill);
+  background: var(--meter-track);
+  overflow: hidden;
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--meter-fill);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-slow) var(--ease-entrance);
+}
+
+/* ─── Badges ──────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 640;
+  letter-spacing: 0.01em;
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  box-shadow: inset 0 0 0 1px var(--divider);
+}
+
+.badge--success {
+  background: var(--surface-success);
+  color: var(--text-on-success);
+}
+
+.badge--warning {
+  background: var(--surface-warning);
+  color: var(--text-on-warning);
+}
+
+.badge--danger {
+  background: var(--surface-danger);
+  color: var(--text-on-danger);
+}
+
+.badge--info {
+  background: var(--surface-info);
+  color: var(--text-on-info);
+}
+
+/* ─── Callouts ────────────────────────────────────────────── */
+
+/* The plain message callout takes the brand accent edge, the same violet
+   --accent-line that marks a result card and the about quote, so every
+   highlighted block shares one accent language. A semantic variant keeps its
+   own edge instead: its border colour follows its text colour (currentColor),
+   so a danger message reads danger and an info message reads info, never
+   violet. No new colour token: --accent-line is the existing decorative
+   accent, and it carries no text here. */
+.callout {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  border-left: 3px solid var(--accent-line);
+  animation: enter-result var(--motion-base) var(--ease-entrance) both;
+}
+
+.callout--danger {
+  background: var(--surface-danger);
+  color: var(--text-on-danger);
+  border-left-color: currentColor;
+}
+
+.callout--warning {
+  background: var(--surface-warning);
+  color: var(--text-on-warning);
+  border-left-color: currentColor;
+}
+
+.callout--success {
+  background: var(--surface-success);
+  color: var(--text-on-success);
+  border-left-color: currentColor;
+}
+
+.callout--info {
+  background: var(--surface-info);
+  color: var(--text-on-info);
+  border-left-color: currentColor;
+}
+
+/* ─── Recommendation overlay (COMPOSE-3) ──────────────────── */
+
+.recommendation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  border-left: 3px solid var(--accent-line);
+  animation: enter-result var(--motion-base) var(--ease-entrance) both;
+}
+
+.recommendation-headline {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ─── Key and value tiles ─────────────────────────────────── */
+
+.kv {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.kv-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  border: 1px solid var(--divider);
+}
+
+.kv-key {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted-on-raised);
+}
+
+.kv-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  word-break: break-word;
+}
+
+/* ─── Stacks and lists ────────────────────────────────────── */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.stack--tight {
+  gap: var(--space-2);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-line);
+}
+
+/* ─── Signatures and claims ───────────────────────────────── */
+
+.signature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--divider);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  box-shadow: var(--shadow-xs);
+}
+
+.signature-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.signature-name {
+  font-weight: 640;
+}
+
+.signature-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted-on-raised);
+}
+
+/* ─── Decoder wave trace ──────────────────────────────────── */
+/* The oracle state is carried by the SHAPE of the marker, not its colour, so a
+   probabilistic score can never be mistaken for an exact verdict and the trace
+   stays unambiguous in greyscale. Every colour here is a reference to an
+   existing token; the file adds no new colour token. */
+
+.wave-trace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.wave {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--divider);
+  border-left: 3px solid var(--border-on-raised);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+}
+
+/* The wave that halted the chain is the anchor of the display. */
+.wave--failed {
+  border-left-color: var(--text-on-danger);
+}
+
+.wave-body {
+  min-width: 0;
+}
+
+.wave-role {
+  font-weight: 640;
+  font-size: var(--text-sm);
+}
+
+.wave-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted-on-raised);
+  word-break: break-word;
+}
+
+.wave-meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted-on-raised);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.wave-legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* The oracle marker. Base is an outline; the modifiers below give each level a
+   distinct shape. */
+.wave-oracle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 640;
+  border: 1px solid var(--border-on-raised);
+  background: transparent;
+  color: var(--text-on-raised);
+}
+
+/* Exact, recorded verdicts (an authentication tag or a checksum): a solid,
+   filled marker. */
+.wave-oracle--solid {
+  background: var(--surface-success);
+  color: var(--text-on-success);
+  border-color: var(--text-on-success);
+}
+
+/* A probabilistic language score: a striped marker, a different species from
+   the solid exact ones, so a score is never read as a certainty. */
+.wave-oracle--striped {
+  color: var(--text-on-info);
+  border-color: var(--text-on-info);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--tint-accent-strong) 0,
+    var(--tint-accent-strong) 5px,
+    transparent 5px,
+    transparent 10px
+  );
+}
+
+/* Undetermined, and purely structural steps that nothing verified: a hollow,
+   outlined marker, so it never reads as a pass. */
+.wave-oracle--hollow {
+  background: transparent;
+  color: var(--text-muted-on-raised);
+  border-color: var(--border-on-raised);
+  border-style: dashed;
+}
+
+/* The halted wave. */
+.wave-oracle--failed {
+  background: var(--surface-danger);
+  color: var(--text-on-danger);
+  border-color: var(--text-on-danger);
+}
+
+/* ─── Tables ──────────────────────────────────────────────── */
+
+.table-scroll {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--divider);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+th,
+td {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--divider);
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+th {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted-on-panel);
+}
+
+td.is-mono {
+  font-family: var(--font-mono);
+}
+
+/* ─── Disclosure and code ─────────────────────────────────── */
+
+details {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--divider);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  padding: var(--space-2) var(--space-3);
+}
+
+summary {
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-weight: 640;
+  list-style-position: inside;
+}
+
+details[open] summary {
+  margin-bottom: var(--space-2);
+}
+
+details pre {
+  margin: var(--space-2) 0 0;
+  max-height: 280px;
+  overflow: auto;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-field);
+  color: var(--text-on-field);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ─── Modules page ────────────────────────────────────────── */
+
+.module-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.module-group-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted-on-panel);
+}
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--divider);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  transition: transform var(--motion-fast) var(--ease-entrance),
+    box-shadow var(--motion-fast) var(--ease-entrance);
+}
+
+.module:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.module-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.module-name {
+  font-weight: 640;
+}
+
+.module-summary {
+  font-size: var(--text-sm);
+}
+
+.module-reason {
+  font-size: var(--text-xs);
+  color: var(--text-muted-on-raised);
+}
+
+/* ─── About page ──────────────────────────────────────────── */
+
+.about-quote {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--accent-line);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-on-raised);
+  font-size: var(--text-md);
+  font-style: italic;
+}
+
+.about-body {
+  font-size: var(--text-sm);
+  max-width: 82ch;
+}
+
+a {
+  color: var(--link-on-panel);
+  text-underline-offset: 2px;
+}
+
+/* ─── Bootstrap failure ───────────────────────────────────── */
+/* Shown only when the catalogues cannot be loaded. It carries no
+   translated copy by design: at that point there is none to use,
+   so it shows the raw backend error and nothing else.           */
+
+.bootstrap-failure {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 720px;
+  margin: var(--space-7) auto;
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-on-panel);
+  background: var(--surface-danger);
+  color: var(--text-on-danger);
+  box-shadow: var(--shadow-md);
+}
+
+.bootstrap-failure pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ─── Reduced motion ──────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .view,
+  .card--result,
+  .callout {
+    animation: none;
+  }
+
+  .btn:hover,
+  .chip:hover,
+  .module:hover {
+    transform: none;
+  }
+
+  /* The progress bar does not slide under reduced motion: it rests as a
+     still, filled track that reads as busy while an operation runs, then is
+     removed when the report arrives. */
+  .progress-bar {
+    animation: none;
+    transform: none;
+    width: 100%;
+  }
+}

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 320" width="860" height="320" role="img" aria-label="Traceability, per recipient">
+  <title>Traceability, per recipient</title>
+  <desc>One marked copy per recipient, each visually identical, plus a registry. A leaked copy is traced back to the recipient it was issued to.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8B7FE0"/></marker>
+  </defs>
+
+  <rect x="1.5" y="1.5" width="857" height="317" rx="20" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <text x="40" y="48" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#9B87FF">TRACEABILITY, PER RECIPIENT</text>
+  <text x="40" y="72" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" fill="#B7B0D8">One marked copy per recipient, identical to the eye. A leak points back to one name.</text>
+
+  <g font-family="'Segoe UI',system-ui,sans-serif">
+    <!-- Stage 1: one document -->
+    <g transform="translate(58 150)">
+      <rect x="0" y="0" width="72" height="90" rx="8" fill="#211B33" stroke="url(#g)" stroke-width="2"/>
+      <line x1="16" y1="24" x2="56" y2="24" stroke="#6F63D8" stroke-width="3" stroke-linecap="round"/>
+      <line x1="16" y1="42" x2="56" y2="42" stroke="#4B3F73" stroke-width="3" stroke-linecap="round"/>
+      <line x1="16" y1="60" x2="42" y2="60" stroke="#4B3F73" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <text x="94" y="264" text-anchor="middle" font-size="13.5" fill="#D9D3EC">One document</text>
+
+    <!-- fan-out connectors -->
+    <g fill="none" stroke="#8B7FE0" stroke-width="1.6">
+      <path d="M132 178 C180 178 200 128 250 128" marker-end="url(#ar2)"/>
+      <path d="M132 195 C190 195 200 190 250 190" marker-end="url(#ar2)"/>
+      <path d="M132 212 C180 212 200 252 250 252" marker-end="url(#ar2)"/>
+    </g>
+
+    <!-- Stage 2: one copy per recipient -->
+    <g font-size="13.5" fill="#D9D3EC">
+      <rect x="252" y="108" width="240" height="40" rx="8" fill="#211B33" stroke="#4B3F73" stroke-width="1.3"/><circle cx="272" cy="128" r="4" fill="url(#g)"/><text x="288" y="133">Copy issued to recipient A</text>
+      <rect x="252" y="170" width="240" height="40" rx="8" fill="#211B33" stroke="url(#g)" stroke-width="1.6"/><circle cx="272" cy="190" r="4" fill="url(#g)"/><text x="288" y="195">Copy issued to recipient B</text>
+      <rect x="252" y="232" width="240" height="40" rx="8" fill="#211B33" stroke="#4B3F73" stroke-width="1.3"/><circle cx="272" cy="252" r="4" fill="url(#g)"/><text x="288" y="257">Copy issued to recipient C</text>
+    </g>
+
+    <!-- connector to trace -->
+    <path d="M492 190 C560 190 560 190 604 190" fill="none" stroke="#8B7FE0" stroke-width="1.6" marker-end="url(#ar2)"/>
+
+    <!-- Stage 3: trace the leak -->
+    <g transform="translate(618 148)">
+      <rect x="0" y="0" width="72" height="90" rx="8" fill="#211B33" stroke="url(#g)" stroke-width="2"/>
+      <line x1="16" y1="24" x2="56" y2="24" stroke="#4B3F73" stroke-width="3" stroke-linecap="round"/>
+      <line x1="16" y1="42" x2="56" y2="42" stroke="#4B3F73" stroke-width="3" stroke-linecap="round"/>
+      <g transform="translate(34 42)" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round">
+        <circle cx="14" cy="14" r="15"/>
+        <line x1="25" y1="25" x2="38" y2="38"/>
+      </g>
+    </g>
+    <text x="654" y="262" text-anchor="middle" font-size="13.5" fill="#D9D3EC">A leaked copy</text>
+
+    <path d="M690 176 C720 176 740 190 760 190" fill="none" stroke="#8B7FE0" stroke-width="1.6" marker-end="url(#ar2)"/>
+    <rect x="712" y="150" width="132" height="34" rx="8" fill="url(#g)"/>
+    <text x="778" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#150C26">Traced: recipient B</text>
+  </g>
+</svg>

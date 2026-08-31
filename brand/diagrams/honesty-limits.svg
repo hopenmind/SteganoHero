@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" width="820" height="250" role="img" aria-label="Honesty and limits: what the tool proves, and the limit it names">
+  <title>Honesty and limits</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <linearGradient id="gv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+  </defs>
+  <rect x="0" y="0" width="820" height="250" rx="20" fill="#150C26"/>
+  <text x="34" y="42" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="600" letter-spacing="3" fill="#9B87FF">HONESTY AND LIMITS</text>
+  <text x="34" y="63" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8A82A0">Every result states what it can prove and names what it cannot. It never sells a guarantee it cannot keep.</text>
+
+  <g font-family="'Segoe UI',system-ui,sans-serif">
+    <!-- proves -->
+    <g transform="translate(34 84)">
+      <rect width="366" height="140" rx="12" fill="#1A1230" stroke="url(#g)" stroke-width="1.4"/>
+      <text x="22" y="30" font-size="13.5" font-weight="800" fill="#F1EEFF">States what it can prove</text>
+      <g font-size="12.5" fill="#C9C1E6">
+        <g transform="translate(22 52)"><circle cx="6" cy="-4" r="5" fill="url(#gv)"/><text x="20" y="0">The round-trip, by test</text></g>
+        <g transform="translate(22 80)"><circle cx="6" cy="-4" r="5" fill="url(#gv)"/><text x="20" y="0">Tamper detected, never a partial result</text></g>
+        <g transform="translate(22 108)"><circle cx="6" cy="-4" r="5" fill="url(#gv)"/><text x="20" y="0">A leaked copy traced to its recipient</text></g>
+      </g>
+    </g>
+    <!-- names limit -->
+    <g transform="translate(420 84)">
+      <rect width="366" height="140" rx="12" fill="#1A1230" stroke="#3a3357" stroke-width="1"/>
+      <text x="22" y="30" font-size="13.5" font-weight="800" fill="#C9C1E6">Names what it cannot</text>
+      <g font-size="12.5" fill="#A29AB4">
+        <g transform="translate(22 52)"><rect x="1" y="-9" width="10" height="10" rx="2" fill="none" stroke="#8A82A0" stroke-width="1.6"/><text x="22" y="0">Some marks are detectable, and it says so</text></g>
+        <g transform="translate(22 80)"><rect x="1" y="-9" width="10" height="10" rx="2" fill="none" stroke="#8A82A0" stroke-width="1.6"/><text x="22" y="0">A word-choice watermark needs a rewrite</text></g>
+        <g transform="translate(22 108)"><rect x="1" y="-9" width="10" height="10" rx="2" fill="none" stroke="#8A82A0" stroke-width="1.6"/><text x="22" y="0">It does not prove a human wrote a text</text></g>
+      </g>
+    </g>
+  </g>
+</svg>

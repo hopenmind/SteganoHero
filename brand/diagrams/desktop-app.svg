@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" width="820" height="320" role="img" aria-label="The desktop app: one window, a tab per task, fully offline">
+  <title>The desktop app, tab by tab</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <linearGradient id="gv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+  </defs>
+  <rect x="0" y="0" width="820" height="320" rx="20" fill="#150C26"/>
+  <text x="34" y="42" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="600" letter-spacing="3" fill="#9B87FF">DESKTOP APP</text>
+  <text x="34" y="63" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8A82A0">One window, a tab per task, no server and no browser. Theme and language in the top bar.</text>
+
+  <!-- window -->
+  <g font-family="'Segoe UI',system-ui,sans-serif">
+    <rect x="34" y="84" width="752" height="210" rx="14" fill="#120A1F" stroke="#2A2142" stroke-width="1.2"/>
+    <!-- top bar -->
+    <rect x="34" y="84" width="752" height="34" rx="14" fill="#1A1230"/>
+    <rect x="34" y="104" width="752" height="14" fill="#1A1230"/>
+    <circle cx="52" cy="101" r="4.5" fill="url(#gv)"/>
+    <text x="66" y="105" font-size="12.5" font-weight="700" fill="#ECE8F4">SteganoHero</text>
+    <g>
+      <rect x="628" y="92" width="60" height="18" rx="9" fill="#241B3C"/><text x="658" y="105" text-anchor="middle" font-size="10.5" fill="#B7B0D8">System</text>
+      <rect x="696" y="92" width="72" height="18" rx="9" fill="#241B3C"/><text x="732" y="105" text-anchor="middle" font-size="10.5" fill="#B7B0D8">English</text>
+    </g>
+    <!-- tab strip -->
+    <g transform="translate(50 132)" font-size="11.5">
+      <rect x="0" y="0" width="70" height="22" rx="11" fill="url(#g)"/><text x="35" y="15" text-anchor="middle" font-weight="700" fill="#150C26">Compose</text>
+      <g fill="#B7B0D8">
+        <rect x="80" y="0" width="60" height="22" rx="11" fill="#241B3C"/><text x="110" y="15" text-anchor="middle">Decode</text>
+        <rect x="148" y="0" width="62" height="22" rx="11" fill="#241B3C"/><text x="179" y="15" text-anchor="middle">Analyze</text>
+        <rect x="218" y="0" width="82" height="22" rx="11" fill="#241B3C"/><text x="259" y="15" text-anchor="middle">Provenance</text>
+        <rect x="308" y="0" width="58" height="22" rx="11" fill="#241B3C"/><text x="337" y="15" text-anchor="middle">Canary</text>
+        <rect x="374" y="0" width="48" height="22" rx="11" fill="#241B3C"/><text x="398" y="15" text-anchor="middle">Files</text>
+        <rect x="430" y="0" width="58" height="22" rx="11" fill="#241B3C"/><text x="459" y="15" text-anchor="middle">Reveal</text>
+        <rect x="496" y="0" width="70" height="22" rx="11" fill="#241B3C"/><text x="531" y="15" text-anchor="middle">Rest/mcp</text>
+        <rect x="574" y="0" width="54" height="22" rx="11" fill="#241B3C"/><text x="601" y="15" text-anchor="middle">More</text>
+      </g>
+    </g>
+    <!-- content sketch -->
+    <g transform="translate(50 168)">
+      <rect x="0" y="0" width="430" height="110" rx="10" fill="#1A1230" stroke="#2A2142"/>
+      <text x="16" y="24" font-size="11.5" font-weight="700" fill="#C9C1E6">Cover text</text>
+      <rect x="16" y="32" width="398" height="8" rx="4" fill="#2E2547"/>
+      <rect x="16" y="46" width="360" height="8" rx="4" fill="#2E2547"/>
+      <rect x="16" y="60" width="384" height="8" rx="4" fill="#2E2547"/>
+      <rect x="16" y="80" width="150" height="20" rx="10" fill="url(#g)"/><text x="91" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#150C26">Compose</text>
+      <rect x="176" y="80" width="120" height="20" rx="10" fill="#241B3C"/><text x="236" y="94" text-anchor="middle" font-size="11" fill="#B7B0D8">Passphrase</text>
+      <rect x="306" y="80" width="108" height="20" rx="10" fill="#241B3C"/><text x="360" y="94" text-anchor="middle" font-size="11" fill="#B7B0D8">Saturation</text>
+    </g>
+    <g transform="translate(496 168)">
+      <rect x="0" y="0" width="256" height="110" rx="10" fill="#1A1230" stroke="#2A2142"/>
+      <text x="16" y="24" font-size="11.5" font-weight="700" fill="#C9C1E6">Result</text>
+      <text x="16" y="46" font-size="11" fill="#8A82A0">capacity 93 bytes</text>
+      <text x="16" y="64" font-size="11" fill="#8A82A0">verdict CONFIRMED</text>
+      <rect x="16" y="80" width="100" height="20" rx="10" fill="#241B3C"/><text x="66" y="94" text-anchor="middle" font-size="11" fill="#B7B0D8">Copy</text>
+      <rect x="126" y="80" width="114" height="20" rx="10" fill="#241B3C"/><text x="183" y="94" text-anchor="middle" font-size="11" fill="#B7B0D8">Export .md</text>
+    </g>
+  </g>
+</svg>

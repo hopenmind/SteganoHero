@@ -1,0 +1,17 @@
+The Provenance Problem
+
+For most of recorded history, the question of who wrote a document answered itself. Handwriting was personal, paper carried watermarks, seals broke when tampered with, and the physical object travelled alongside its claim of origin. A letter was evidence of itself.
+
+Digital text discarded all of that. A paragraph copied from one screen to another arrives identical, stripped of every trace of where it has been. This was long treated as a feature. Text became weightless, infinitely reproducible, and free to travel. The cost of that freedom went unnoticed because, in practice, the volume of text in circulation stayed small enough that origin could be reconstructed socially. You knew who sent you the file.
+
+That assumption has quietly stopped holding. Synthetic text is now abundant, fluent, and indistinguishable from human writing by inspection alone. The scarce thing is no longer well-written prose. The scarce thing is a credible claim about where a piece of prose came from.
+
+Consider a board pack circulated to eleven people ahead of a quarterly meeting. One version appears in a competitor's hands. Everyone denies it. The document itself, being weightless and traceless, offers nothing. The organisation knows it was leaked and cannot say by whom, which in practice means the leak has no consequence and will happen again.
+
+Consider a public statement attributed to an author who never wrote it. The statement is plausible, well argued, and consistent with everything that author has published. Denying it is possible but unconvincing, because denial and dishonest denial look identical from outside. The absence of a positive proof of origin makes every text equally deniable and equally forgeable.
+
+Both problems have the same shape. Both require the document to carry something about itself that survives ordinary handling: copying, pasting, forwarding, quoting, converting between formats. Not encryption, which protects contents while announcing that contents exist. Something quieter, which travels with the readable text and stays readable.
+
+The technical constraints are unforgiving. Whatever the document carries must survive a copy and paste between applications that normalise text differently. It must survive conversion to a portable document format and back. It must not alter how the text appears to a reader, because a document that looks wrong will be retyped, and retyping destroys everything. It must degrade honestly, reporting what it cannot determine rather than guessing.
+
+These constraints rule out most of the obvious approaches and leave a narrow set of workable ones. The narrowness is not a weakness. It means the problem has a shape, and a shape can be built against.

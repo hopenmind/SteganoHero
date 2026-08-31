@@ -1,0 +1,26 @@
+[package]
+name = "stegano-wm"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Word-choice (statistical / token-sampling) watermark detection and marking, pure-Rust floor"
+
+[features]
+default = []
+# The embedded llama.cpp backend. OFF by default: it pulls a C++ build
+# (cmake, a C/C++ toolchain, libclang for bindgen), so the default build of the
+# workspace stays pure Rust. Enable it to run a local GGUF model in process.
+embedded-llama = ["dep:llama-cpp-2"]
+
+[dependencies]
+sha2.workspace = true
+serde = { workspace = true }
+serde_json.workspace = true
+# HTTP client for OpenAI-compatible servers (Ollama, LM Studio, or an online
+# endpoint). The json feature gives send_json / into_json; the tls feature
+# (rustls) lets an online https:// endpoint work as well as a local one.
+ureq = { version = "2", default-features = false, features = ["json", "tls"] }
+# Embedded in-process GGUF inference (feature `embedded-llama` only). Same crate
+# and version A-typik builds on this machine.
+llama-cpp-2 = { version = "0.1", optional = true }

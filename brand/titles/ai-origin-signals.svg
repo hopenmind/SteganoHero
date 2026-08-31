@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 327 31" width="327" height="31" role="img" aria-label="AI-origin word-choice signals">
+  <title>AI-origin word-choice signals</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6F63D8"/>
+      <stop offset="1" stop-color="#ED30B3"/>
+    </linearGradient>
+    <style>
+      .rest { fill: #1b1330; }
+      @media (prefers-color-scheme: dark) { .rest { fill: #ECE8F4; } }
+      text { font-family: 'Trebuchet MS','Segoe UI',system-ui,sans-serif; font-weight: 700; }
+    </style>
+  </defs>
+  <text x="4.0" y="22" font-size="21">
+    <tspan fill="url(#g)">A</tspan><tspan class="rest">I-origin word-choice signals</tspan>
+  </text>
+</svg>

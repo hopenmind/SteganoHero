@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 236" width="860" height="236" role="img" aria-label="Encrypt, then hide">
+  <title>Encrypt, then hide</title>
+  <desc>The secret is sealed with authenticated encryption, then placed inside an ordinary cover text that travels as plain email. Two independent protections.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8B7FE0"/></marker>
+  </defs>
+
+  <rect x="1.5" y="1.5" width="857" height="233" rx="20" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <text x="40" y="46" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#9B87FF">ENCRYPT, THEN HIDE</text>
+  <text x="40" y="70" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" fill="#B7B0D8">Two independent protections: it is hidden, and what is hidden is encrypted.</text>
+
+  <g font-family="'Segoe UI',system-ui,sans-serif">
+    <!-- node 1: secret -->
+    <rect x="40" y="96" width="150" height="112" rx="12" fill="#211B33" stroke="#4B3F73" stroke-width="1.3"/>
+    <g transform="translate(98 116)" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round">
+      <rect x="0" y="0" width="34" height="42" rx="5"/><line x1="8" y1="12" x2="26" y2="12"/><line x1="8" y1="22" x2="26" y2="22"/><line x1="8" y1="32" x2="18" y2="32"/>
+    </g>
+    <text x="115" y="182" text-anchor="middle" font-size="14.5" font-weight="700" fill="#F1EEFF">Your secret</text>
+
+    <!-- node 2: encrypt (lock) -->
+    <rect x="246" y="96" width="150" height="112" rx="12" fill="#211B33" stroke="url(#g)" stroke-width="1.6"/>
+    <g transform="translate(304 114)" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0" y="18" width="34" height="26" rx="5" fill="url(#g)" stroke="none"/>
+      <path d="M6 18 V12 A11 11 0 0 1 28 12 V18"/>
+    </g>
+    <text x="321" y="178" text-anchor="middle" font-size="14.5" font-weight="700" fill="#F1EEFF">Encrypted</text>
+    <text x="321" y="197" text-anchor="middle" font-size="12.5" fill="#9A93B4">authenticated</text>
+
+    <!-- node 3: hide (layers) -->
+    <rect x="452" y="96" width="150" height="112" rx="12" fill="#211B33" stroke="#4B3F73" stroke-width="1.3"/>
+    <g transform="translate(506 114)" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linejoin="round">
+      <rect x="12" y="0" width="34" height="44" rx="5"/>
+      <rect x="0" y="10" width="34" height="34" rx="5" fill="#211B33"/>
+      <circle cx="17" cy="27" r="3.2" fill="url(#g)" stroke="none"/>
+    </g>
+    <text x="527" y="178" text-anchor="middle" font-size="14.5" font-weight="700" fill="#F1EEFF">Hidden</text>
+    <text x="527" y="197" text-anchor="middle" font-size="12.5" fill="#9A93B4">in a cover text</text>
+
+    <!-- node 4: plain email -->
+    <rect x="658" y="96" width="150" height="112" rx="12" fill="#211B33" stroke="#4B3F73" stroke-width="1.3"/>
+    <g transform="translate(710 118)" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0" y="0" width="46" height="34" rx="5"/><path d="M2 3 L23 20 L44 3"/>
+    </g>
+    <text x="733" y="178" text-anchor="middle" font-size="14.5" font-weight="700" fill="#F1EEFF">Plain email</text>
+    <text x="733" y="197" text-anchor="middle" font-size="12.5" fill="#9A93B4">looks ordinary</text>
+
+    <!-- arrows -->
+    <g fill="none" stroke="#8B7FE0" stroke-width="1.8">
+      <line x1="196" y1="152" x2="240" y2="152" marker-end="url(#ar3)"/>
+      <line x1="402" y1="152" x2="446" y2="152" marker-end="url(#ar3)"/>
+      <line x1="608" y1="152" x2="652" y2="152" marker-end="url(#ar3)"/>
+    </g>
+  </g>
+</svg>

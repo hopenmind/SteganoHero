@@ -1,0 +1,40 @@
+[package]
+name = "stegano-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Core steganography library — methods, crypto, pipeline, metrics"
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+# Envelope serialisation, SPEC_CORE_V2 section 4. Declared here rather than in
+# the workspace manifest: no other crate serialises the envelope directly.
+postcard = { version = "1", default-features = false, features = ["alloc"] }
+base64.workspace = true
+rand.workspace = true
+sha2.workspace = true
+chacha20poly1305.workspace = true
+aes-gcm.workspace = true
+ml-kem = { version = "0.3", features = ["getrandom"] }
+argon2.workspace = true
+ed25519-dalek.workspace = true
+hostname.workspace = true
+flate2.workspace = true
+unicode-normalization.workspace = true
+tracing.workspace = true
+# C2PA read and verify (AR-2). The conformant reader, so our verdict matches a
+# third party's. default-features off drops the OpenSSL backend (no system
+# library) and the HTTP stack (we read local bytes, never fetch remote
+# manifests); rust_native_crypto validates signatures in pure Rust. The `pdf`
+# feature is deliberately left off: it pulls lopdf 0.44, which does not compile
+# on the current toolchain (a `time`-crate API it removed). Image containers
+# (JPEG, PNG, TIFF and more) are covered; the PDF container is a follow-up once a
+# compatible lopdf is available. Declared here, not in the workspace manifest: no
+# other crate reads content credentials directly.
+c2pa = { version = "0.90", default-features = false, features = ["rust_native_crypto"] }
+
+[dev-dependencies]
+pretty_assertions = "1"

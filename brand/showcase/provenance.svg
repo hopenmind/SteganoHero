@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="Provenance">
+  <title>Provenance</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient></defs>
+  <rect x="2" y="2" width="356" height="236" rx="18" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <rect x="24" y="22" width="52" height="4" rx="2" fill="url(#g)"/>
+  <g transform="translate(150 40)" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 4 L56 16 L56 34 C56 52 45 62 30 68 C15 62 4 52 4 34 L4 16 Z"/>
+    <path d="M18 34 L27 44 L44 24"/>
+  </g>
+  <text x="180" y="150" text-anchor="middle" fill="#F1EEFF" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="26">Provenance</text>
+  <text x="180" y="182" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">Attach a verifiable claim to a document,</text>
+  <text x="180" y="204" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">then confirm it later.</text>
+</svg>

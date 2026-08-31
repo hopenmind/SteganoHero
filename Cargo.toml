@@ -1,0 +1,70 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/stegano-core",
+    "crates/stegano-files",
+    "crates/stegano-server",
+    "crates/stegano-cli",
+    "crates/stegano-tauri",
+    "crates/stegano-mcp",
+    "crates/stegano-wm",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Hope 'n Mind"]
+license = "AGPL-3.0"
+description = "Advanced text steganography platform"
+
+[workspace.dependencies]
+# Core
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+rand = "0.8"
+sha2 = "0.10"
+
+# Crypto
+chacha20poly1305 = "0.10"
+aes-gcm = "0.10"
+argon2 = "0.5"
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+
+# System
+hostname = "0.4"
+
+# Compression
+flate2 = "1"
+
+# Unicode
+unicode-normalization = "0.1"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# Server
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+
+# Storage
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Email
+lettre = "0.11"
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+codegen-units = 1
+# Binary ~2-4 Mo au lieu de 20+

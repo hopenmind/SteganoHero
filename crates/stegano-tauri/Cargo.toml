@@ -1,0 +1,56 @@
+[package]
+name = "stegano-tauri"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "SteganoHero desktop application — Tauri 2"
+# The crate keeps its workspace name, but the produced executable is the product,
+# not the framework: it is "SteganoHero.exe", never "stegano-tauri.exe". autobins
+# is off so the explicit target below replaces the package-named auto binary that
+# src/main.rs would otherwise create, and it matches tauri.conf.json's
+# mainBinaryName so the bundler installs the same name.
+autobins = false
+
+[[bin]]
+name = "SteganoHero"
+path = "src/main.rs"
+
+[features]
+default = []
+# Build the desktop app WITH the embedded llama.cpp model backend (the C++
+# build). Off by default, so the default workspace build stays pure Rust; the
+# packaged desktop build enables it. At runtime the model is still opt-in: the
+# user chooses a backend (a local GGUF, an Ollama / LM Studio server, or the
+# MCP / REST flow), and no model runs until they do.
+embedded-llama = ["stegano-wm/embedded-llama"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+stegano-core = { path = "../stegano-core" }
+# The runtime configuration surface (the Settings type and its validated
+# setter) is owned by stegano-mcp, which both the MCP channel and the REST
+# server already wrap. The desktop app depends on it for the same reason:
+# to reuse the one validated config path rather than reimplement validation.
+stegano-mcp = { path = "../stegano-mcp" }
+# The file layer's SAFE transform (inspect, clean) over real documents. The
+# desktop app wraps it for the Files tab exactly as it wraps the frozen core's
+# sovereignty operations: it owns no extraction or write-back logic of its own.
+stegano-files = { path = "../stegano-files" }
+# The word-choice (statistical / token-sampling) watermark layer, for the
+# AI-regulation tab's wordmark modules. Pure Rust by default; the embedded model
+# is behind that crate's own feature, forwarded by this crate's opt-in
+# `embedded-llama` feature above.
+stegano-wm = { path = "../stegano-wm" }
+tauri = { version = "2", features = [] }
+serde.workspace = true
+serde_json.workspace = true
+base64.workspace = true
+
+[dev-dependencies]
+# The Files command tests build a minimal marked DOCX in-memory to exercise the
+# container clean path, so they need the ZIP writer. Same crate and features as
+# stegano-files' own fixtures, reused by cargo from the locked version.
+zip = { version = "2", default-features = false, features = ["deflate"] }

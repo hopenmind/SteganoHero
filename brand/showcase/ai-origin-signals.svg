@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="AI-origin signals">
+  <title>AI-origin signals</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient></defs>
+  <rect x="2" y="2" width="356" height="236" rx="18" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <rect x="24" y="22" width="52" height="4" rx="2" fill="url(#g)"/>
+  <g transform="translate(144 44)" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round">
+    <path d="M8 56 A 40 40 0 0 1 80 56"/>
+    <line x1="44" y1="56" x2="64" y2="28"/>
+    <circle cx="44" cy="56" r="5" fill="url(#g)"/>
+    <line x1="16" y1="52" x2="20" y2="46"/>
+    <line x1="44" y1="24" x2="44" y2="18"/>
+    <line x1="72" y1="52" x2="68" y2="46"/>
+  </g>
+  <text x="180" y="150" text-anchor="middle" fill="#F1EEFF" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="26">AI-origin signals</text>
+  <text x="180" y="182" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">An honest indication of machine origin,</text>
+  <text x="180" y="204" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">with what it cannot establish stated.</text>
+</svg>

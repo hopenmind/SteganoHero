@@ -1,0 +1,28 @@
+[package]
+name = "stegano-mcp"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Agent-facing integration surface: tool catalogue, dispatcher and stdio channel"
+
+[lib]
+name = "stegano_mcp"
+path = "src/lib.rs"
+
+[[bin]]
+name = "stegano-mcp"
+path = "src/main.rs"
+
+[dependencies]
+stegano-core = { path = "../stegano-core" }
+# The file layer (inspect/clean over real documents). Surfaces sit above files
+# and core; this is the only new dependency the file tools need, a path dep with
+# no heavy or external crate beyond it.
+stegano-files = { path = "../stegano-files" }
+# The word-choice (statistical / token-sampling) watermark layer.
+stegano-wm = { path = "../stegano-wm" }
+serde.workspace = true
+serde_json.workspace = true
+base64.workspace = true
+sha2.workspace = true

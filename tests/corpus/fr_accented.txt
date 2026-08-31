@@ -1,0 +1,17 @@
+Note interne sur la traçabilité documentaire
+
+La question de l'origine d'un document s'est longtemps réglée d'elle-même. Une écriture manuscrite était personnelle, un papier portait son filigrane, un sceau se brisait si on l'ouvrait. L'objet voyageait avec sa preuve.
+
+Le texte numérique a tout effacé. Un paragraphe recopié d'un écran à l'autre arrive identique, dépouillé de toute trace de son parcours. Pendant longtemps, cela a été considéré comme un progrès. Le texte devenait léger, reproductible à l'infini, libre de circuler.
+
+Le coût de cette liberté est resté invisible tant que le volume de textes en circulation permettait de reconstituer socialement leur provenance. On savait qui avait envoyé le fichier.
+
+Cette hypothèse ne tient plus. Le texte synthétique est désormais abondant, fluide, et indiscernable à la lecture d'une écriture humaine. Ce qui devient rare, ce n'est plus la prose bien écrite. C'est une affirmation crédible sur son origine.
+
+Prenons un dossier de conseil d'administration diffusé à onze personnes avant une réunion trimestrielle. Une version se retrouve chez un concurrent. Tout le monde dément. Le document, léger et sans trace, n'apporte rien. L'organisation sait qu'il y a eu fuite et ne peut désigner personne, ce qui signifie en pratique que la fuite reste sans conséquence et se reproduira.
+
+Prenons une déclaration publique attribuée à un auteur qui ne l'a jamais écrite. Elle est plausible, bien argumentée, cohérente avec ses publications antérieures. La démentir est possible mais peu convaincant, car un démenti sincère et un démenti mensonger se ressemblent vus de l'extérieur.
+
+Les deux problèmes ont la même forme. Tous deux exigent que le document porte sur lui-même quelque chose qui survive à la manipulation ordinaire : copie, collage, transfert, citation, conversion de format.
+
+Les contraintes techniques sont impitoyables. Ce que porte le document doit survivre à un copier-coller entre applications qui normalisent différemment. Il doit survivre à une conversion en format portable et retour. Il ne doit rien changer à l'apparence du texte, car un document qui paraît anormal sera retapé, et retaper détruit tout.

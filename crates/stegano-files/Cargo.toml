@@ -1,0 +1,69 @@
+[package]
+name = "stegano-files"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "File layer — load real documents (DOCX, ODT, HTML, MD, TXT) and extract their text"
+
+[dependencies]
+thiserror.workspace = true
+# The frozen core's SAFE sovereignty operations (inspect, clean). files sits
+# ABOVE core; core never depends on files, keep it that way. This is the only
+# dependency the transform layer needs: no async, no server, no heavy crate is
+# pulled in beyond the path.
+stegano-core = { path = "../stegano-core" }
+# ZIP container reader for the Office formats (DOCX, ODT are ZIP archives).
+# default-features off drops bzip2/zstd/aes so the dependency stays pure-Rust
+# and offline; the `deflate` feature is the only compression Office parts use.
+# Declared here, not in the workspace manifest: no other crate reads containers.
+zip = { version = "2", default-features = false, features = ["deflate"] }
+# Namespace-aware XML reader for word/document.xml and content.xml. Declared here
+# for the same reason: only this crate parses document XML.
+quick-xml = "0.36"
+# JSON reader for the Jupyter (.ipynb) importer only. Small, pure Rust, no
+# network or process, and already in the workspace lock (stegano-core uses it),
+# so it adds no download. The ipynb importer needs a real JSON parser; a
+# hand-rolled one would be the bug-prone path. Taken from the workspace manifest.
+serde_json.workspace = true
+# Derive macros for the native-metadata READ result type (NativeMetadata), so a
+# caller can serialize the parsed docProps. serde (with `derive`) is already
+# resolved in the workspace lock (stegano-core uses it and serde_json pulls it),
+# so this reference adds no new crate and no download; only a dependency edge.
+serde = { workspace = true }
+# Pure-Rust EXIF reader for the image-metadata READ side (JPEG/TIFF/PNG/WebP/HEIF
+# containers). crate name is `exif`. Its ONLY transitive dependency is
+# `mutate_once` (a tiny pure-Rust write-once cell); no network, no process, no
+# image engine, nothing Chromium/Typst/tokio. Pinned exact so the cached crate is
+# used and no newer version is pulled. Declared here, not in the workspace
+# manifest: only this crate reads image metadata. XMP is a separate XML packet,
+# parsed with the `quick-xml` already present above.
+exif = { package = "kamadak-exif", version = "=0.5.5" }
+# Markdown parser for the format-to-format conversion exporters (Phase C). Every
+# copied upstream-converter writer is a pulldown-cmark event-loop state machine, and the
+# HTML target uses pulldown-cmark's own pure-Rust renderer. Default features
+# (which include the `html` module) only; pure Rust, no network, no process, no
+# build script, nothing Chromium/Typst-engine/tokio. Same 0.12 line the upstream converter
+# uses, so the copied event loops match. Declared here, not in the workspace
+# manifest: only this crate converts documents. default-features off drops the
+# `getopts` CLI helper (only its own binary needs it); `html` is the pure-Rust
+# renderer the HTML target uses.
+pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
+# Pure-Rust PDF reader for the PDF-to-text SOURCE path (read the text layer of a
+# PDF so provenance and analysis can act on it). This is EXTRACTION, never a
+# render and never a mark. It is NOT Chromium: the only reason PDF-to-text was
+# deferred was to avoid the 179 MB headless browser (see the PDF export module),
+# and lopdf is a small pure-Rust parser, so it honours that reason. Declared here,
+# not in the workspace manifest: only this crate reads PDF text. default-features
+# off drops `rayon` (parallelism we do not need for single documents) and
+# `chrono` (date parsing we do not use); `nom_parser` is the pure-Rust parser.
+lopdf = { version = "0.34", default-features = false, features = ["nom_parser"] }
+
+[dev-dependencies]
+# The integration tests build minimal DOCX/ODT fixtures in-memory, so they need
+# the ZIP writer. Same crate as the runtime dependency above, reused by cargo.
+zip = { version = "2", default-features = false, features = ["deflate"] }
+# The transform tests build provably-marked fixtures by marking a cover with the
+# core's own carriers, so the fixture carries a real mark rather than a guessed
+# code point. Same path dependency as the runtime one above.
+stegano-core = { path = "../stegano-core" }

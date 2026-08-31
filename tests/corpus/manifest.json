@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "note": "Measured values, not estimates. Regenerate with tests/corpus/README.md instructions if files change.",
+  "density_defaults": { "conceal": 0.25, "sign": 0.50, "mark": 0.85 },
+  "files": [
+    {
+      "name": "en_long_article.txt",
+      "language": "en",
+      "chars": 2736,
+      "homoglyph_positions": 1130,
+      "homoglyph_ratio": 0.413,
+      "capacity_bytes": { "conceal": 35, "sign": 70, "mark": 120 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "primary happy path for every carrier and cipher",
+        "confirms the ~40 percent substitutable ratio",
+        "long enough to carry a full 24-byte preamble plus payload",
+        "excerpt survival: any 160-char window should locate a resync marker"
+      ]
+    },
+    {
+      "name": "fr_accented.txt",
+      "language": "fr",
+      "chars": 2175,
+      "homoglyph_positions": 853,
+      "homoglyph_ratio": 0.392,
+      "capacity_bytes": { "conceal": 26, "sign": 53, "mark": 90 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "accented Latin must not break position counting or strip round-trip",
+        "NFC and NFD normalisation must not alter recovered payload",
+        "n-gram oracle must identify French, not English"
+      ]
+    },
+    {
+      "name": "technical_markdown.md",
+      "language": "en",
+      "chars": 1252,
+      "homoglyph_positions": 482,
+      "homoglyph_ratio": 0.385,
+      "capacity_bytes": { "conceal": 15, "sign": 30, "mark": 51 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "structured text with code fences and tables survives round-trip",
+        "substitution inside a fenced code block would corrupt commands: verify placement policy",
+        "format survivability when exported to HTML and back"
+      ]
+    },
+    {
+      "name": "mixed_multilingual.txt",
+      "language": "multi",
+      "chars": 725,
+      "homoglyph_positions": 297,
+      "homoglyph_ratio": 0.410,
+      "capacity_bytes": { "conceal": 9, "sign": 18, "mark": 31 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "n-gram oracle must report low confidence or multiple candidates, never a confident wrong answer",
+        "realistic distribution notice: the canary trap primary use case"
+      ]
+    },
+    {
+      "name": "en_short.txt",
+      "language": "en",
+      "chars": 71,
+      "homoglyph_positions": 32,
+      "homoglyph_ratio": 0.451,
+      "capacity_bytes": { "conceal": 1, "sign": 2, "mark": 3 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "below the 24-byte preamble threshold: standard mode must refuse, not truncate",
+        "detached signature mode is the only valid path here",
+        "n-gram scoring below the ~40 byte floor must report not-applicable"
+      ]
+    },
+    {
+      "name": "minimal_tiny.txt",
+      "language": "en",
+      "chars": 10,
+      "homoglyph_positions": 3,
+      "homoglyph_ratio": 0.300,
+      "capacity_bytes": { "conceal": 0, "sign": 0, "mark": 0 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "zero effective capacity: every carrier must raise CapacityExceeded",
+        "must never silently produce an unusable document"
+      ]
+    },
+    {
+      "name": "cjk_japanese.txt",
+      "language": "ja",
+      "chars": 216,
+      "homoglyph_positions": 0,
+      "homoglyph_ratio": 0.0,
+      "capacity_bytes": { "conceal": 0, "sign": 0, "mark": 0 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 0,
+      "tests": [
+        "zero homoglyph capacity on non-Latin script: must raise, never fall back silently to another carrier",
+        "invisible-character carriers remain viable here: capacity should be non-zero for zero_width",
+        "demonstrates that carrier choice is script-dependent and the UI must say so"
+      ]
+    },
+    {
+      "name": "cyrillic_russian.txt",
+      "language": "ru",
+      "chars": 509,
+      "homoglyph_positions": 0,
+      "homoglyph_ratio": 0.0,
+      "capacity_bytes": { "conceal": 0, "sign": 0, "mark": 0 },
+      "preexisting_invisible": 0,
+      "cyrillic_chars": 428,
+      "tests": [
+        "DESTRUCTIVE TRAP: homoglyph strip() maps Cyrillic back to Latin, which would corrupt legitimate Russian text",
+        "strip() must be non-destructive on text that was never encoded, or be gated on prior detection",
+        "detect() sees Cyrillic without Latin so ScriptMix does not fire: verify no false positive",
+        "stealth mode salt derives from strip_all output, so a corrupting strip breaks salt reproducibility"
+      ]
+    },
+    {
+      "name": "already_carrying.txt",
+      "language": "en",
+      "chars": 177,
+      "homoglyph_positions": 69,
+      "homoglyph_ratio": 0.390,
+      "capacity_bytes": { "conceal": 2, "sign": 4, "mark": 7 },
+      "preexisting_invisible": 4,
+      "cyrillic_chars": 0,
+      "tests": [
+        "contains U+200B, U+200C, U+2060 and U+FEFF before any encoding",
+        "detect() must not report a payload where none exists",
+        "encoding over pre-existing invisibles must not corrupt extraction",
+        "stealth mode: strip_all removes these, so the derived salt differs from a naive hash of the raw text"
+      ]
+    }
+  ]
+}

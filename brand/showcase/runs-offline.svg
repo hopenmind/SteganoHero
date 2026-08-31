@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="Runs fully offline">
+  <title>Runs fully offline</title>
+  <desc>No external service and no network call at runtime. Everything runs on your machine.</desc>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient></defs>
+  <rect x="2" y="2" width="356" height="236" rx="18" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <rect x="24" y="22" width="52" height="4" rx="2" fill="url(#g)"/>
+  <g transform="translate(148 42)" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 54 C6 54 0 46 0 38 C0 30 7 24 15 24 C17 13 27 6 38 6 C50 6 60 15 61 27 C61 27 61 27 62 27 C56 27 50 27 44 27"/>
+    <path d="M30 40 C22 40 22 54 32 54 L58 54 C66 54 66 42 58 41 C58 33 50 30 45 34"/>
+    <line x1="6" y1="6" x2="62" y2="60" stroke="#ED30B3" stroke-width="4.5"/>
+  </g>
+  <text x="180" y="150" text-anchor="middle" fill="#F1EEFF" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="26">Runs fully offline</text>
+  <text x="180" y="182" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">No external service, no network call.</text>
+  <text x="180" y="204" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">Everything runs on your machine.</text>
+</svg>

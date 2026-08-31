@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" width="820" height="260" role="img" aria-label="Connect an assistant: clients drive the same catalogue over MCP or HTTP">
+  <title>Connect an assistant</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <linearGradient id="gv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6F63D8"/></marker>
+  </defs>
+  <rect x="0" y="0" width="820" height="260" rx="20" fill="#150C26"/>
+  <text x="34" y="42" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="600" letter-spacing="3" fill="#9B87FF">CONNECT AN ASSISTANT</text>
+  <text x="34" y="63" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8A82A0">The same catalogue is an MCP server. An assistant client drives every capability, offline.</text>
+
+  <g font-family="'Segoe UI',system-ui,sans-serif">
+    <!-- clients -->
+    <g>
+      <text x="34" y="98" font-size="11" letter-spacing="2" fill="#7C749A">CLIENTS</text>
+      <g font-size="12" font-weight="600" fill="#ECE8F4">
+        <rect x="34" y="108" width="150" height="30" rx="8" fill="#1E1733" stroke="#33294f"/><text x="52" y="127">Claude Desktop</text>
+        <rect x="34" y="146" width="150" height="30" rx="8" fill="#1E1733" stroke="#33294f"/><text x="52" y="165">Cursor</text>
+        <rect x="34" y="184" width="150" height="30" rx="8" fill="#1E1733" stroke="#33294f"/><text x="52" y="203">Any MCP client</text>
+      </g>
+    </g>
+    <!-- arrows to transports -->
+    <g stroke="#6F63D8" stroke-width="1.6" marker-end="url(#ah)">
+      <line x1="192" y1="123" x2="300" y2="140"/>
+      <line x1="192" y1="161" x2="300" y2="150"/>
+      <line x1="192" y1="199" x2="300" y2="176"/>
+    </g>
+    <!-- transports -->
+    <g>
+      <rect x="304" y="120" width="170" height="34" rx="9" fill="#211B33" stroke="url(#g)" stroke-width="1.4"/>
+      <text x="389" y="141" text-anchor="middle" font-size="12.5" font-weight="700" fill="#F1EEFF">MCP over stdio</text>
+      <rect x="304" y="162" width="170" height="34" rx="9" fill="#211B33" stroke="#33294f" stroke-width="1"/>
+      <text x="389" y="183" text-anchor="middle" font-size="12.5" font-weight="700" fill="#C9C1E6">REST over HTTP</text>
+    </g>
+    <!-- arrow to catalogue -->
+    <g stroke="#6F63D8" stroke-width="1.8" marker-end="url(#ah)">
+      <line x1="478" y1="137" x2="560" y2="150"/>
+      <line x1="478" y1="179" x2="560" y2="164"/>
+    </g>
+    <!-- catalogue + engine -->
+    <g>
+      <rect x="564" y="112" width="222" height="46" rx="10" fill="#211B33" stroke="url(#g)" stroke-width="1.6"/>
+      <text x="675" y="132" text-anchor="middle" font-size="13.5" font-weight="800" fill="#F1EEFF">One command catalogue</text>
+      <text x="675" y="149" text-anchor="middle" font-size="11" fill="#A29AB4">same fields, ranges, refusals</text>
+      <rect x="564" y="166" width="222" height="40" rx="10" fill="#1A1230" stroke="#2A2142"/>
+      <text x="675" y="190" text-anchor="middle" font-size="12.5" font-weight="700" fill="#C9C1E6">The engine, in-process</text>
+    </g>
+    <text x="34" y="240" font-size="11.5" fill="#8A82A0">One click in the Rest/mcp tab configures a client and backs up its config first, or a script does the same.</text>
+  </g>
+</svg>

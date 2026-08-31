@@ -1,0 +1,8 @@
+{
+  "identifier": "default",
+  "description": "Default capabilities for SteganoHero",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

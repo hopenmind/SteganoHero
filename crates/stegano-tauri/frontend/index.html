@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SteganoHero</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="shell" id="shell" hidden>
+
+  <a class="skip-link" href="#workspace" data-i18n="chrome.skip_to_content"></a>
+
+  <header class="masthead">
+    <h1 class="brand">
+      <img class="brand-logo" src="logo.png" data-i18n-aria-label="app.name">
+    </h1>
+
+    <div class="masthead-controls">
+      <div class="control">
+        <span class="control-label" id="theme-label" data-i18n="chrome.theme.label"></span>
+        <div class="segmented" id="theme-picker" role="group" data-i18n-aria-label="chrome.theme.label"></div>
+      </div>
+      <div class="control">
+        <span class="control-label" id="language-label" data-i18n="chrome.language.label"></span>
+        <div class="segmented" id="language-picker" role="group" data-i18n-aria-label="chrome.language.label"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabstrip" id="tabstrip" role="tablist" data-i18n-aria-label="chrome.tabs.label"></nav>
+
+  <main class="workspace" id="workspace">
+    <div class="panel-stack">
+
+      <!-- ── Compose ─────────────────────────────────────── -->
+      <section class="view" id="view-compose" role="tabpanel" aria-labelledby="tab-compose" tabindex="-1">
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="compose.title"></h2>
+          <p class="view-intro" data-i18n="compose.intro"></p>
+        </div>
+
+        <!-- Two-column workbench: composition inputs on the left, the capacity
+             readout with the primary action and the result on the right. It
+             stacks to a single column on narrow viewports. -->
+        <div class="workbench">
+          <div class="workbench-main">
+
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.content.title"></h3>
+              </div>
+              <div class="field">
+                <label class="field-label" for="compose-secret" data-i18n="compose.secret.label"></label>
+                <textarea id="compose-secret" rows="3" data-i18n-placeholder="compose.secret.placeholder"></textarea>
+              </div>
+              <!-- Cover input with the reusable file-import pattern: a picked or
+                   dropped document becomes the cover, the secret is hidden inside
+                   that file, and the marked file is offered to download in its own
+                   format. With no file, the pasted cover text is used unchanged. -->
+              <div class="field">
+                <label class="field-label" for="compose-cover" data-i18n="compose.cover.label"></label>
+                <div class="file-frame" id="compose-cover-frame">
+                  <textarea id="compose-cover" rows="8" data-i18n-placeholder="compose.cover.placeholder"></textarea>
+                  <div class="file-overlay" id="compose-cover-overlay" hidden>
+                    <div class="file-overlay-card">
+                      <span class="file-overlay-name" id="compose-cover-name"></span>
+                      <span class="file-overlay-ext" id="compose-cover-ext"></span>
+                      <button class="btn" type="button" id="compose-cover-remove" data-i18n="fileimport.remove"></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="file-pick">
+                  <label class="field-label" for="compose-cover-file" data-i18n="compose.cover.file.label"></label>
+                  <input type="file" id="compose-cover-file">
+                  <span class="field-hint" data-i18n="compose.cover.file.hint"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payload shaping (backlog UI-payload). Hide a small file inside
+                 the cover text, on its own or alongside the typed text, and
+                 optionally make it smaller first. The measured sizes are shown;
+                 the file becomes the layer Compose hides through the same path
+                 as typed text. -->
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.payload.title"></h3>
+              </div>
+              <p class="card-hint" data-i18n="compose.payload.hint"></p>
+              <div class="field">
+                <label class="field-label" for="compose-payload-file" data-i18n="compose.payload.file.label"></label>
+                <input type="file" id="compose-payload-file">
+                <span class="field-hint" data-i18n="compose.payload.file.hint"></span>
+              </div>
+              <div class="field">
+                <label class="field-label">
+                  <input type="checkbox" id="compose-payload-compress">
+                  <span data-i18n="compose.payload.compress.label"></span>
+                </label>
+                <span class="field-hint" data-i18n="compose.payload.compress.hint"></span>
+              </div>
+              <div class="btn-row">
+                <button class="btn" id="compose-payload-attach" data-i18n="compose.payload.attach"></button>
+              </div>
+              <div id="compose-payload-message"></div>
+              <div class="card card--result" id="compose-payload-result" hidden>
+                <div class="kv" id="compose-payload-summary"></div>
+                <div id="compose-payload-note"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.carriers.label"></h3>
+              </div>
+              <p class="card-hint" data-i18n="compose.carriers.hint"></p>
+              <div class="chip-grid" id="compose-carriers"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.encryption.title"></h3>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="compose-cipher" data-i18n="compose.cipher.label"></label>
+                  <select id="compose-cipher"></select>
+                  <span class="field-hint" id="compose-cipher-note"></span>
+                </div>
+                <div class="field" id="compose-password-field">
+                  <label class="field-label" for="compose-password" data-i18n="compose.password.label"></label>
+                  <input type="password" id="compose-password" data-i18n-placeholder="compose.password.placeholder">
+                  <span class="field-hint" data-i18n="compose.cipher.hint"></span>
+                </div>
+                <div class="field" id="compose-recipient-field" hidden>
+                  <label class="field-label" for="compose-recipient-key" data-i18n="compose.recipient.label"></label>
+                  <textarea id="compose-recipient-key" rows="2" data-i18n-placeholder="compose.recipient.placeholder"></textarea>
+                  <span class="field-hint" data-i18n="compose.recipient.hint"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <aside class="workbench-side">
+
+            <!-- Mission and density (backlog UI-mission). The mission sets the
+                 density ceiling and the slider's recommended default; the readout
+                 shows the consequence of the chosen fill ratio: how much fits, how
+                 visible it is, and the verdict the analyser returns on the output. -->
+            <div class="card card--control">
+              <div class="card-head">
+                <h3 class="card-title" id="compose-mission-heading" data-i18n="compose.mission.title"></h3>
+              </div>
+              <p class="card-hint" data-i18n="compose.mission.hint"></p>
+              <div class="chip-grid chip-grid--compact" id="compose-missions" role="radiogroup" aria-labelledby="compose-mission-heading"></div>
+
+              <div class="field">
+                <label class="field-label" for="compose-density" data-i18n="compose.mission.density.label"></label>
+                <input type="range" id="compose-density" min="0.05" max="0.6" step="0.01" value="0.25">
+                <span class="field-hint" id="compose-density-value"></span>
+              </div>
+
+              <!-- Frame mode (COMPOSE-2): the light frame is the default base of
+                   the multi-pass composition; the robust frame is an opt-in for
+                   recovery from a partly damaged or excerpted document. -->
+              <div class="field">
+                <label class="field-label">
+                  <input type="checkbox" id="compose-robust">
+                  <span data-i18n="compose.frame.robust.label"></span>
+                </label>
+                <span class="field-hint" data-i18n="compose.frame.robust.hint"></span>
+              </div>
+
+              <!-- Saturation (SATURATE): the aggressive variant that fills the
+                   channel with the secret repeated. Overrides robust. -->
+              <div class="field">
+                <label class="field-label">
+                  <input type="checkbox" id="compose-saturate">
+                  <span data-i18n="compose.saturate.label"></span>
+                </label>
+                <span class="field-hint" data-i18n="compose.saturate.hint"></span>
+              </div>
+
+              <div class="kv" id="compose-mission-readout"></div>
+              <div id="compose-mission-message"></div>
+
+              <!-- Recommendation overlay (COMPOSE-3): the engine's best carrier,
+                   mission and density for the current secret and cover, applied
+                   in one click or ignored. -->
+              <div class="btn-row">
+                <button class="btn btn--quiet" type="button" id="compose-recommend" data-i18n="compose.recommend.action"></button>
+              </div>
+              <div class="recommendation" id="compose-recommendation" hidden>
+                <p class="recommendation-headline" id="compose-recommendation-headline"></p>
+                <div class="kv" id="compose-recommendation-detail"></div>
+                <div class="btn-row">
+                  <button class="btn btn--primary" type="button" id="compose-recommendation-apply" data-i18n="compose.recommend.apply"></button>
+                  <button class="btn btn--quiet" type="button" id="compose-recommendation-ignore" data-i18n="compose.recommend.ignore"></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card--control">
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.capacity.title"></h3>
+              </div>
+              <div class="kv">
+                <div class="kv-item">
+                  <span class="kv-key" data-i18n="compose.capacity.required"></span>
+                  <span class="kv-value" id="compose-required"></span>
+                </div>
+              </div>
+              <p class="field-hint" data-i18n="compose.capacity.conservative_note"></p>
+
+              <div class="btn-row">
+                <button class="btn btn--primary" id="compose-run" data-i18n="compose.action.run"></button>
+                <button class="btn btn--quiet" id="compose-measure" data-i18n="compose.capacity.measure"></button>
+                <button class="btn" id="compose-clear" data-i18n="compose.action.clear"></button>
+              </div>
+
+              <!-- Shown only while a cover file is being concealed into. The bar
+                   is the shared, transform-only, reduced-motion-safe progress. -->
+              <div class="progress" id="compose-progress" role="progressbar" data-i18n-aria-label="progress.working" hidden>
+                <span class="progress-bar"></span>
+              </div>
+
+              <div id="compose-message"></div>
+            </div>
+
+            <div class="card card--result" id="compose-result" hidden>
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="compose.result.title"></h3>
+                <div class="card-actions">
+                  <select class="export-select" id="compose-export-format" data-i18n-aria-label="export.format_label"></select>
+                  <button class="btn btn--small" id="compose-export" data-i18n="export.action"></button>
+                  <button class="btn btn--small" id="compose-download" data-i18n="compose.result.download" hidden></button>
+                  <button class="btn btn--small" id="compose-copy" data-i18n="action.copy"></button>
+                </div>
+              </div>
+              <p class="card-hint" data-i18n="compose.result.hint"></p>
+              <textarea class="is-output" id="compose-output" readonly></textarea>
+              <div class="kv" id="compose-summary"></div>
+              <div id="compose-warnings"></div>
+              <details>
+                <summary data-i18n="action.details"></summary>
+                <pre id="compose-json"></pre>
+              </details>
+            </div>
+
+          </aside>
+        </div>
+      </section>
+
+      <!-- ── Decode ──────────────────────────────────────── -->
+      <section class="view" id="view-decode" role="tabpanel" aria-labelledby="tab-decode" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="decode.title"></h2>
+          <p class="view-intro" data-i18n="decode.intro"></p>
+        </div>
+
+        <div class="card">
+          <!-- Received input with the reusable file-import pattern: a picked or
+               dropped marked document becomes the input, and the hidden layer is
+               recovered from that file in place of the box. With no file, the
+               pasted received text is used unchanged. -->
+          <div class="field">
+            <label class="field-label" for="decode-text" data-i18n="decode.text.label"></label>
+            <div class="file-frame" id="decode-input-frame">
+              <textarea id="decode-text" rows="8" data-i18n-placeholder="decode.text.placeholder"></textarea>
+              <div class="file-overlay" id="decode-file-overlay" hidden>
+                <div class="file-overlay-card">
+                  <span class="file-overlay-name" id="decode-file-name"></span>
+                  <span class="file-overlay-ext" id="decode-file-ext"></span>
+                  <button class="btn" type="button" id="decode-file-remove" data-i18n="fileimport.remove"></button>
+                </div>
+              </div>
+            </div>
+            <div class="file-pick">
+              <label class="field-label" for="decode-file" data-i18n="decode.file.label"></label>
+              <input type="file" id="decode-file">
+              <span class="field-hint" data-i18n="decode.file.hint"></span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="decode-carrier" data-i18n="decode.carriers.label"></label>
+              <select id="decode-carrier"></select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="decode-password" data-i18n="decode.password.label"></label>
+              <input type="password" id="decode-password" data-i18n-placeholder="decode.password.placeholder">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="decode-secret-key" data-i18n="decode.recipient.label"></label>
+            <textarea id="decode-secret-key" rows="2" data-i18n-placeholder="decode.recipient.placeholder"></textarea>
+            <span class="field-hint" data-i18n="decode.recipient.hint"></span>
+          </div>
+          <details class="field" id="decode-keypair">
+            <summary data-i18n="decode.recipient.generate"></summary>
+            <div class="btn-row">
+              <button class="btn" type="button" id="decode-keypair-generate" data-i18n="decode.recipient.generate_action"></button>
+            </div>
+            <div id="decode-keypair-result" hidden>
+              <label class="field-label" for="decode-keypair-public" data-i18n="decode.recipient.public_label"></label>
+              <textarea id="decode-keypair-public" rows="2" readonly></textarea>
+              <label class="field-label" for="decode-keypair-secret" data-i18n="decode.recipient.secret_label"></label>
+              <textarea id="decode-keypair-secret" rows="2" readonly></textarea>
+              <span class="field-hint" data-i18n="decode.recipient.keep_secret"></span>
+            </div>
+          </details>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="decode-run" data-i18n="decode.action.run"></button>
+            <button class="btn" id="decode-clear" data-i18n="decode.action.clear"></button>
+          </div>
+
+          <!-- Shown only while a marked file is being decoded. The bar is the
+               shared, transform-only, reduced-motion-safe progress. -->
+          <div class="progress" id="decode-progress" role="progressbar" data-i18n-aria-label="progress.working" hidden>
+            <span class="progress-bar"></span>
+          </div>
+
+          <div id="decode-message"></div>
+        </div>
+
+        <div class="card card--result" id="decode-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="decode.result.title"></h3>
+            <div class="card-actions">
+              <select class="export-select" id="decode-export-format" data-i18n-aria-label="export.format_label"></select>
+              <button class="btn btn--small" id="decode-export" data-i18n="export.action"></button>
+              <button class="btn btn--small" id="decode-download" data-i18n="decode.result.download" hidden></button>
+              <button class="btn btn--small" id="decode-copy" data-i18n="action.copy"></button>
+            </div>
+          </div>
+          <textarea class="is-output" id="decode-output" readonly></textarea>
+          <div class="kv" id="decode-summary"></div>
+          <div id="decode-warnings"></div>
+          <details>
+            <summary data-i18n="action.details"></summary>
+            <pre id="decode-json"></pre>
+          </details>
+        </div>
+
+        <!-- Recover a hidden file (backlog UI-payload). If a revealed layer
+             carries a file, list it and read it back. Restore its original size
+             when it was made smaller before hiding. -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="decode.recover.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="decode.recover.intro"></p>
+          <div class="field">
+            <label class="field-label" for="decode-recover-text" data-i18n="decode.recover.text.label"></label>
+            <textarea id="decode-recover-text" rows="4" data-i18n-placeholder="decode.recover.text.placeholder"></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="decode-recover-run" data-i18n="decode.recover.action.run"></button>
+            <button class="btn" id="decode-recover-clear" data-i18n="decode.recover.action.clear"></button>
+          </div>
+          <div id="decode-recover-message"></div>
+
+          <div class="card card--result" id="decode-recover-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="decode.recover.result.title"></h3>
+            </div>
+            <div id="decode-recover-verdict"></div>
+            <div class="stack" id="decode-recover-files"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Analyze ─────────────────────────────────────── -->
+      <section class="view" id="view-analyze" role="tabpanel" aria-labelledby="tab-analyze" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="analyze.title"></h2>
+          <p class="view-intro" data-i18n="analyze.intro"></p>
+        </div>
+
+        <div class="card">
+          <div class="field">
+            <label class="field-label" for="analyze-text" data-i18n="analyze.text.label"></label>
+            <div class="file-frame" id="analyze-input-frame">
+              <textarea id="analyze-text" rows="8" data-i18n-placeholder="analyze.text.placeholder"></textarea>
+              <div class="file-overlay" id="analyze-file-overlay" hidden>
+                <div class="file-overlay-card">
+                  <span class="file-overlay-name" id="analyze-file-name"></span>
+                  <span class="file-overlay-ext" id="analyze-file-ext"></span>
+                  <button class="btn" type="button" id="analyze-file-remove" data-i18n="fileimport.remove"></button>
+                </div>
+              </div>
+            </div>
+            <div class="file-pick">
+              <label class="field-label" for="analyze-file" data-i18n="fileimport.label"></label>
+              <input type="file" id="analyze-file">
+              <span class="field-hint" data-i18n="fileimport.hint"></span>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="analyze-run" data-i18n="analyze.action.run"></button>
+            <button class="btn" id="analyze-clear" data-i18n="analyze.action.clear"></button>
+            <button class="btn" id="analyze-export" data-i18n="analyze.action.export" hidden></button>
+          </div>
+          <div class="progress" id="analyze-progress" role="progressbar" data-i18n-aria-label="progress.working" hidden>
+            <span class="progress-bar"></span>
+          </div>
+          <div id="analyze-message"></div>
+        </div>
+
+        <div class="card card--result" id="analyze-verdict-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="analyze.verdict.label"></h3>
+            <div class="card-actions">
+              <span class="badge" id="analyze-verdict-badge"></span>
+            </div>
+          </div>
+          <p class="card-hint" id="analyze-verdict-note"></p>
+          <div class="kv">
+            <div class="kv-item">
+              <span class="kv-key" data-i18n="analyze.score.label"></span>
+              <span class="kv-value" id="analyze-score"></span>
+            </div>
+          </div>
+          <h4 class="field-label" data-i18n="analyze.summary.title"></h4>
+          <ul class="bullets stack--tight" id="analyze-summary"></ul>
+        </div>
+
+        <div class="card card--result" id="analyze-signatures-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="analyze.signatures.title"></h3>
+          </div>
+          <div class="stack" id="analyze-signatures"></div>
+        </div>
+
+        <div class="card card--result" id="analyze-unicode-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="analyze.unicode.title"></h3>
+          </div>
+          <div class="kv" id="analyze-unicode-counts"></div>
+          <h4 class="field-label" data-i18n="analyze.unicode.breakdown"></h4>
+          <div id="analyze-unicode-breakdown"></div>
+          <h4 class="field-label" data-i18n="analyze.unicode.scripts"></h4>
+          <div id="analyze-unicode-scripts"></div>
+          <h4 class="field-label" data-i18n="analyze.unicode.unusual"></h4>
+          <div id="analyze-unicode-unusual"></div>
+        </div>
+
+        <div class="card card--result" id="analyze-stats-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="analyze.stats.title"></h3>
+          </div>
+          <div class="kv" id="analyze-stats"></div>
+          <details>
+            <summary data-i18n="action.details"></summary>
+            <pre id="analyze-json"></pre>
+          </details>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="analyze.compare.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="analyze.compare.intro"></p>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="compare-original" data-i18n="analyze.compare.original.label"></label>
+              <textarea id="compare-original" rows="5" data-i18n-placeholder="analyze.compare.original.placeholder"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label" for="compare-candidate" data-i18n="analyze.compare.candidate.label"></label>
+              <textarea id="compare-candidate" rows="5" data-i18n-placeholder="analyze.compare.candidate.placeholder"></textarea>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="compare-run" data-i18n="analyze.compare.action"></button>
+          </div>
+          <div id="compare-message"></div>
+          <div class="kv" id="compare-result" hidden></div>
+          <p class="field-hint" data-i18n="analyze.compare.estimate_note"></p>
+        </div>
+      </section>
+
+      <!-- ── Provenance ──────────────────────────────────── -->
+      <section class="view" id="view-provenance" role="tabpanel" aria-labelledby="tab-provenance" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="provenance.title"></h2>
+          <p class="view-intro" data-i18n="provenance.intro"></p>
+        </div>
+
+        <div class="card">
+          <p class="card-hint" data-i18n="provenance.disclaimer"></p>
+        </div>
+
+        <!-- Signing identity -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="provenance.identity.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="provenance.identity.intro"></p>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="identity-generate" data-i18n="provenance.identity.generate"></button>
+          </div>
+          <div class="card card--result" id="identity-result" hidden>
+            <div class="kv" id="identity-summary"></div>
+            <div class="field">
+              <label class="field-label" for="identity-public" data-i18n="provenance.identity.public_label"></label>
+              <textarea class="is-output" id="identity-public" rows="2" readonly></textarea>
+            </div>
+            <div class="callout callout--warning" data-i18n="provenance.identity.private_warning"></div>
+            <div class="field">
+              <label class="field-label" for="identity-private" data-i18n="provenance.identity.private_label"></label>
+              <textarea class="is-output" id="identity-private" rows="2" readonly></textarea>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn--small" id="identity-copy-public" data-i18n="provenance.identity.copy_public"></button>
+              <button class="btn btn--small" id="identity-copy-private" data-i18n="provenance.identity.copy_private"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mark -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="provenance.mark.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="provenance.mark.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="mark-document" data-i18n="provenance.mark.document.label"></label>
+            <textarea id="mark-document" rows="6" data-i18n-placeholder="provenance.mark.document.placeholder"></textarea>
+            <input type="file" id="mark-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="field">
+            <span class="field-label" data-i18n="provenance.mark.assertions.label"></span>
+            <p class="field-hint" data-i18n="provenance.mark.assertions.hint"></p>
+          </div>
+          <div class="chip-grid">
+            <label class="chip">
+              <input type="checkbox" id="assert-human">
+              <div>
+                <div class="chip-name" data-i18n="provenance.assertion.human_authorship.name"></div>
+                <div class="chip-note" data-i18n="provenance.assertion.human_authorship.note"></div>
+              </div>
+            </label>
+            <label class="chip">
+              <input type="checkbox" id="assert-ai">
+              <div>
+                <div class="chip-name" data-i18n="provenance.assertion.ai_generated.name"></div>
+                <div class="chip-note" data-i18n="provenance.assertion.ai_generated.note"></div>
+              </div>
+            </label>
+            <label class="chip">
+              <input type="checkbox" id="assert-integrity">
+              <div>
+                <div class="chip-name" data-i18n="provenance.assertion.integrity.name"></div>
+                <div class="chip-note" data-i18n="provenance.assertion.integrity.note"></div>
+              </div>
+            </label>
+            <label class="chip">
+              <input type="checkbox" id="assert-recipient">
+              <div>
+                <div class="chip-name" data-i18n="provenance.assertion.recipient_fingerprint.name"></div>
+                <div class="chip-note" data-i18n="provenance.assertion.recipient_fingerprint.note"></div>
+              </div>
+            </label>
+          </div>
+
+          <div class="field" id="assert-human-fields" hidden>
+            <label class="field-label" for="mark-author" data-i18n="provenance.mark.human.author_label"></label>
+            <input type="text" id="mark-author" data-i18n-placeholder="provenance.mark.human.author_placeholder">
+          </div>
+
+          <div class="field-row" id="assert-ai-fields" hidden>
+            <div class="field">
+              <label class="field-label" for="mark-model" data-i18n="provenance.mark.ai.model_label"></label>
+              <input type="text" id="mark-model" data-i18n-placeholder="provenance.mark.ai.model_placeholder">
+            </div>
+            <div class="field">
+              <label class="field-label" for="mark-provider" data-i18n="provenance.mark.ai.provider_label"></label>
+              <input type="text" id="mark-provider" data-i18n-placeholder="provenance.mark.ai.provider_placeholder">
+            </div>
+            <div class="field">
+              <label class="field-label" for="mark-system-version" data-i18n="provenance.mark.ai.system_version_label"></label>
+              <input type="text" id="mark-system-version" data-i18n-placeholder="provenance.mark.ai.system_version_placeholder">
+            </div>
+          </div>
+
+          <div class="field-row" id="assert-recipient-fields" hidden>
+            <div class="field">
+              <label class="field-label" for="mark-recipient-id" data-i18n="provenance.mark.recipient.id_label"></label>
+              <input type="text" id="mark-recipient-id" data-i18n-placeholder="provenance.mark.recipient.id_placeholder">
+            </div>
+            <div class="field">
+              <label class="field-label" for="mark-recipient-salt" data-i18n="provenance.mark.recipient.salt_label"></label>
+              <input type="text" id="mark-recipient-salt" data-i18n-placeholder="provenance.mark.recipient.salt_placeholder">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="mark-key" data-i18n="provenance.mark.signing.label"></label>
+            <textarea id="mark-key" rows="2" data-i18n-placeholder="provenance.mark.signing.placeholder"></textarea>
+            <span class="field-hint" data-i18n="provenance.mark.signing.hint"></span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="mark-binding" data-i18n="provenance.mark.binding.label"></label>
+              <select id="mark-binding"></select>
+              <span class="field-hint" id="mark-binding-note"></span>
+            </div>
+            <div class="field" id="mark-carrier-field" hidden>
+              <label class="field-label" for="mark-carrier" data-i18n="provenance.mark.binding.carrier_label"></label>
+              <select id="mark-carrier"></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label">
+              <input type="checkbox" id="mark-timestamp">
+              <span data-i18n="provenance.mark.timestamp.label"></span>
+            </label>
+            <span class="field-hint" data-i18n="provenance.mark.timestamp.hint"></span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="mark-run" data-i18n="provenance.mark.action.run"></button>
+            <button class="btn" id="mark-clear" data-i18n="provenance.mark.action.clear"></button>
+          </div>
+          <div id="mark-message"></div>
+        </div>
+
+        <div class="card card--result" id="mark-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="provenance.mark.result.title"></h3>
+          </div>
+          <div id="mark-cover-restored"></div>
+
+          <div class="field" id="mark-sidecar-field" hidden>
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="provenance.mark.result.sidecar_label"></h4>
+              <div class="card-actions">
+                <button class="btn btn--small" id="mark-copy-sidecar" data-i18n="provenance.mark.copy_sidecar"></button>
+              </div>
+            </div>
+            <p class="field-hint" data-i18n="provenance.mark.result.sidecar_hint"></p>
+            <textarea class="is-output" id="mark-sidecar" rows="8" readonly></textarea>
+          </div>
+
+          <div class="field" id="mark-marked-field" hidden>
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="provenance.mark.result.marked_label"></h4>
+              <div class="card-actions">
+                <select class="export-select" id="mark-marked-export-format" data-i18n-aria-label="export.format_label"></select>
+                <button class="btn btn--small" id="mark-marked-export" data-i18n="export.action"></button>
+                <button class="btn btn--small" id="mark-copy-marked" data-i18n="provenance.mark.copy_marked"></button>
+              </div>
+            </div>
+            <p class="field-hint" data-i18n="provenance.mark.result.marked_hint"></p>
+            <textarea class="is-output" id="mark-marked" rows="6" readonly></textarea>
+          </div>
+
+          <div class="kv" id="mark-summary"></div>
+          <details>
+            <summary data-i18n="action.details"></summary>
+            <pre id="mark-json"></pre>
+          </details>
+        </div>
+
+        <!-- Verify -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="provenance.verify.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="provenance.verify.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="verify-document" data-i18n="provenance.verify.document.label"></label>
+            <textarea id="verify-document" rows="6" data-i18n-placeholder="provenance.verify.document.placeholder"></textarea>
+            <input type="file" id="verify-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+          <div class="field">
+            <label class="field-label" for="verify-sidecar" data-i18n="provenance.verify.sidecar.label"></label>
+            <textarea id="verify-sidecar" rows="4" data-i18n-placeholder="provenance.verify.sidecar.placeholder"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="verify-keys" data-i18n="provenance.verify.keys.label"></label>
+            <textarea id="verify-keys" rows="3" data-i18n-placeholder="provenance.verify.keys.placeholder"></textarea>
+            <span class="field-hint" data-i18n="provenance.verify.keys.hint"></span>
+          </div>
+          <div class="field">
+            <span class="field-label" data-i18n="provenance.verify.carriers.label"></span>
+            <p class="field-hint" data-i18n="provenance.verify.carriers.hint"></p>
+            <div class="chip-grid" id="verify-carriers"></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="verify-run" data-i18n="provenance.verify.action.run"></button>
+            <button class="btn" id="verify-clear" data-i18n="provenance.verify.action.clear"></button>
+          </div>
+          <div id="verify-message"></div>
+
+          <div class="card card--result" id="verify-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="provenance.verify.result.title"></h3>
+            </div>
+            <div class="stack" id="verify-report"></div>
+            <details>
+              <summary data-i18n="action.details"></summary>
+              <pre id="verify-json"></pre>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Canary ──────────────────────────────────────── -->
+      <section class="view" id="view-canary" role="tabpanel" aria-labelledby="tab-canary" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="canary.title"></h2>
+          <p class="view-intro" data-i18n="canary.intro"></p>
+        </div>
+
+        <div class="card">
+          <p class="card-hint" data-i18n="canary.disclaimer"></p>
+        </div>
+
+        <!-- Generate -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="canary.generate.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="canary.generate.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="canary-document" data-i18n="canary.generate.document.label"></label>
+            <textarea id="canary-document" rows="6" data-i18n-placeholder="canary.generate.document.placeholder"></textarea>
+            <input type="file" id="canary-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="canary-recipients" data-i18n="canary.generate.recipients.label"></label>
+              <textarea id="canary-recipients" rows="6" data-i18n-placeholder="canary.generate.recipients.placeholder"></textarea>
+              <span class="field-hint" data-i18n="canary.generate.recipients.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="canary-salt" data-i18n="canary.generate.salt.label"></label>
+              <input type="text" id="canary-salt" data-i18n-placeholder="canary.generate.salt.placeholder">
+              <span class="field-hint" data-i18n="canary.generate.salt.hint"></span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="canary-generate-run" data-i18n="canary.generate.action.run"></button>
+            <button class="btn" id="canary-generate-clear" data-i18n="canary.generate.action.clear"></button>
+          </div>
+          <div id="canary-generate-message"></div>
+        </div>
+
+        <div class="card card--result" id="canary-generate-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="canary.generate.result.title"></h3>
+          </div>
+          <div id="canary-cover-restored"></div>
+          <div class="kv" id="canary-generate-summary"></div>
+
+          <div class="field">
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="canary.generate.result.registry_label"></h4>
+              <div class="card-actions">
+                <button class="btn btn--small" id="canary-copy-registry" data-i18n="canary.generate.copy_registry"></button>
+              </div>
+            </div>
+            <p class="field-hint" data-i18n="canary.generate.result.registry_hint"></p>
+            <textarea class="is-output" id="canary-registry" rows="6" readonly></textarea>
+          </div>
+
+          <h4 class="field-label" data-i18n="canary.generate.result.versions_label"></h4>
+          <p class="field-hint" data-i18n="canary.generate.result.versions_hint"></p>
+          <div class="stack" id="canary-versions"></div>
+        </div>
+
+        <!-- Trace -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="canary.trace.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="canary.trace.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="canary-leaked" data-i18n="canary.trace.leaked.label"></label>
+            <textarea id="canary-leaked" rows="6" data-i18n-placeholder="canary.trace.leaked.placeholder"></textarea>
+            <input type="file" id="canary-leaked-file" data-i18n-aria-label="input.file.label">
+          </div>
+          <div class="field">
+            <label class="field-label" for="canary-trace-registry" data-i18n="canary.trace.registry.label"></label>
+            <textarea id="canary-trace-registry" rows="6" data-i18n-placeholder="canary.trace.registry.placeholder"></textarea>
+            <span class="field-hint" data-i18n="canary.trace.registry.hint"></span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="canary-trace-run" data-i18n="canary.trace.action.run"></button>
+            <button class="btn" id="canary-trace-clear" data-i18n="canary.trace.action.clear"></button>
+          </div>
+          <div id="canary-trace-message"></div>
+
+          <div class="card card--result" id="canary-trace-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="canary.trace.result.title"></h3>
+            </div>
+            <div id="canary-trace-verdict"></div>
+            <div class="kv" id="canary-trace-summary"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── AI-regulation ───────────────────────────────── -->
+      <section class="view" id="view-airegulation" role="tabpanel" aria-labelledby="tab-airegulation" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="airegulation.title"></h2>
+          <p class="view-intro" data-i18n="airegulation.intro"></p>
+        </div>
+
+        <div class="card">
+          <p class="card-hint" data-i18n="airegulation.disclaimer"></p>
+        </div>
+
+        <div class="module-grid">
+
+        <!-- Inspect -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.inspect.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.inspect.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-inspect-document" data-i18n="airegulation.inspect.document.label"></label>
+            <textarea id="airegulation-inspect-document" rows="6" data-i18n-placeholder="airegulation.inspect.document.placeholder"></textarea>
+            <input type="file" id="airegulation-inspect-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-inspect-run" data-i18n="airegulation.inspect.action.run"></button>
+            <button class="btn" id="airegulation-inspect-clear" data-i18n="airegulation.inspect.action.clear"></button>
+          </div>
+          <div id="airegulation-inspect-message"></div>
+
+          <div class="card card--result" id="airegulation-inspect-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.inspect.result.title"></h3>
+          </div>
+          <div id="airegulation-inspect-verdict"></div>
+          <div class="kv" id="airegulation-inspect-summary"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.inspect.result.classes_label"></h4>
+          <p class="field-hint" data-i18n="airegulation.inspect.result.classes_hint"></p>
+          <div class="kv" id="airegulation-inspect-classes"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.inspect.result.other_label"></h4>
+          <p class="field-hint" data-i18n="airegulation.inspect.result.other_hint"></p>
+          <div class="kv" id="airegulation-inspect-other"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.inspect.result.notes_label"></h4>
+          <div class="stack" id="airegulation-inspect-notes"></div>
+          </div>
+        </div>
+
+        <!-- Clean -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.clean.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.clean.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-clean-document" data-i18n="airegulation.clean.document.label"></label>
+            <textarea id="airegulation-clean-document" rows="6" data-i18n-placeholder="airegulation.clean.document.placeholder"></textarea>
+            <input type="file" id="airegulation-clean-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="field">
+            <span class="field-label" data-i18n="airegulation.clean.classes.label"></span>
+            <span class="field-hint" data-i18n="airegulation.clean.classes.hint"></span>
+            <div class="chip-grid" id="airegulation-clean-classes">
+              <label class="chip">
+                <input type="checkbox" class="aireg-class" data-class="zero_width" checked>
+                <div>
+                  <div class="chip-name" data-i18n="airegulation.class.zero_width"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="aireg-class" data-class="homoglyph" checked>
+                <div>
+                  <div class="chip-name" data-i18n="airegulation.class.homoglyph"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="aireg-class" data-class="bidi" checked>
+                <div>
+                  <div class="chip-name" data-i18n="airegulation.class.bidi"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="aireg-class" data-class="whitespace_var" checked>
+                <div>
+                  <div class="chip-name" data-i18n="airegulation.class.whitespace_var"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-clean-run" data-i18n="airegulation.clean.action.run"></button>
+            <button class="btn" id="airegulation-clean-clear" data-i18n="airegulation.clean.action.clear"></button>
+          </div>
+          <div id="airegulation-clean-message"></div>
+
+          <div class="card card--result" id="airegulation-clean-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.clean.result.title"></h3>
+          </div>
+          <div id="airegulation-clean-altered"></div>
+          <div class="kv" id="airegulation-clean-removed"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.clean.result.residual_label"></h4>
+          <div class="stack" id="airegulation-clean-residual"></div>
+
+          <div class="field">
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="airegulation.clean.result.cleaned_label"></h4>
+              <div class="card-actions">
+                <select class="export-select" id="airegulation-clean-export-format" data-i18n-aria-label="export.format_label"></select>
+                <button class="btn btn--small" id="airegulation-clean-export" data-i18n="export.action"></button>
+                <button class="btn btn--small" id="airegulation-clean-copy" data-i18n="airegulation.clean.result.copy"></button>
+              </div>
+            </div>
+            <textarea class="is-output" id="airegulation-clean-output" rows="6" readonly></textarea>
+          </div>
+          </div>
+        </div>
+
+        <!-- Pristine clean -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.pristine.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.pristine.intro"></p>
+
+          <div class="callout callout--warning" data-i18n="airegulation.pristine.tradeoff"></div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-pristine-document" data-i18n="airegulation.pristine.document.label"></label>
+            <textarea id="airegulation-pristine-document" rows="6" data-i18n-placeholder="airegulation.pristine.document.placeholder"></textarea>
+            <input type="file" id="airegulation-pristine-document-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-pristine-run" data-i18n="airegulation.pristine.action.run"></button>
+            <button class="btn" id="airegulation-pristine-clear" data-i18n="airegulation.pristine.action.clear"></button>
+          </div>
+          <div id="airegulation-pristine-message"></div>
+
+          <div class="card card--result" id="airegulation-pristine-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.pristine.result.title"></h3>
+          </div>
+          <div id="airegulation-pristine-altered"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.pristine.result.removed_label"></h4>
+          <div class="kv" id="airegulation-pristine-removed"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.pristine.result.notes_label"></h4>
+          <div class="stack" id="airegulation-pristine-notes"></div>
+
+          <div class="field">
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="airegulation.pristine.result.cleaned_label"></h4>
+              <div class="card-actions">
+                <select class="export-select" id="airegulation-pristine-export-format" data-i18n-aria-label="export.format_label"></select>
+                <button class="btn btn--small" id="airegulation-pristine-export" data-i18n="export.action"></button>
+                <button class="btn btn--small" id="airegulation-pristine-copy" data-i18n="airegulation.pristine.result.copy"></button>
+              </div>
+            </div>
+            <textarea class="is-output" id="airegulation-pristine-output" rows="6" readonly></textarea>
+          </div>
+          </div>
+        </div>
+
+        <!-- C2PA read -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.c2pa.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.c2pa.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-c2pa-file" data-i18n="airegulation.c2pa.file.label"></label>
+            <input type="file" id="airegulation-c2pa-file">
+            <span class="field-hint" data-i18n="airegulation.c2pa.file.hint"></span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="airegulation-c2pa-base64" data-i18n="airegulation.c2pa.base64.label"></label>
+              <textarea id="airegulation-c2pa-base64" rows="3" data-i18n-placeholder="airegulation.c2pa.base64.placeholder"></textarea>
+              <span class="field-hint" data-i18n="airegulation.c2pa.base64.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="airegulation-c2pa-hint" data-i18n="airegulation.c2pa.hint.label"></label>
+              <input type="text" id="airegulation-c2pa-hint" data-i18n-placeholder="airegulation.c2pa.hint.placeholder">
+              <span class="field-hint" data-i18n="airegulation.c2pa.hint.hint"></span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-c2pa-run" data-i18n="airegulation.c2pa.action.run"></button>
+            <button class="btn" id="airegulation-c2pa-clear" data-i18n="airegulation.c2pa.action.clear"></button>
+          </div>
+          <div id="airegulation-c2pa-message"></div>
+
+          <div class="card card--result" id="airegulation-c2pa-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.c2pa.result.title"></h3>
+          </div>
+          <div id="airegulation-c2pa-verdict"></div>
+          <div class="kv" id="airegulation-c2pa-summary"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.c2pa.result.failures_label"></h4>
+          <div class="kv" id="airegulation-c2pa-failures"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.c2pa.result.manifest_label"></h4>
+          <div class="kv" id="airegulation-c2pa-manifest"></div>
+
+          <h4 class="field-label" data-i18n="airegulation.c2pa.result.notes_label"></h4>
+          <div class="stack" id="airegulation-c2pa-notes"></div>
+          </div>
+        </div>
+
+        <!-- Word-choice marks: group heading spanning the grid -->
+        <div class="module-group-head">
+          <h3 class="module-group-title" data-i18n="airegulation.wordmark.group.title"></h3>
+          <p class="module-group-intro" data-i18n="airegulation.wordmark.group.intro"></p>
+        </div>
+
+        <!-- Analyze word choices -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.wordmark.analyze.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.wordmark.analyze.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-analyze-text" data-i18n="airegulation.wordmark.analyze.text.label"></label>
+            <textarea id="airegulation-wm-analyze-text" rows="6" data-i18n-placeholder="airegulation.wordmark.analyze.text.placeholder"></textarea>
+            <input type="file" id="airegulation-wm-analyze-text-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-analyze-acrostic" data-i18n="airegulation.wordmark.analyze.acrostic.label"></label>
+            <input type="text" id="airegulation-wm-analyze-acrostic" data-i18n-placeholder="airegulation.wordmark.analyze.acrostic.placeholder">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-analyze-key" data-i18n="airegulation.wordmark.analyze.key.label"></label>
+            <input type="text" id="airegulation-wm-analyze-key" data-i18n-placeholder="airegulation.wordmark.analyze.key.placeholder">
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-wm-analyze-run" data-i18n="airegulation.wordmark.analyze.action.run"></button>
+            <button class="btn" id="airegulation-wm-analyze-clear" data-i18n="airegulation.wordmark.analyze.action.clear"></button>
+          </div>
+          <div id="airegulation-wm-analyze-message"></div>
+
+          <div class="card card--result" id="airegulation-wm-analyze-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="airegulation.wordmark.analyze.result.title"></h3>
+            </div>
+            <div class="kv" id="airegulation-wm-analyze-findings"></div>
+          </div>
+        </div>
+
+        <!-- Perturb word choices -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.wordmark.scrub.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.wordmark.scrub.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-scrub-text" data-i18n="airegulation.wordmark.scrub.text.label"></label>
+            <textarea id="airegulation-wm-scrub-text" rows="6" data-i18n-placeholder="airegulation.wordmark.scrub.text.placeholder"></textarea>
+            <input type="file" id="airegulation-wm-scrub-text-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-scrub-aggression" data-i18n="airegulation.wordmark.scrub.aggression.label"></label>
+            <select id="airegulation-wm-scrub-aggression">
+              <option data-value="light" data-i18n="airegulation.wordmark.scrub.aggression.light"></option>
+              <option data-value="medium" selected data-i18n="airegulation.wordmark.scrub.aggression.medium"></option>
+              <option data-value="heavy" data-i18n="airegulation.wordmark.scrub.aggression.heavy"></option>
+            </select>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-wm-scrub-run" data-i18n="airegulation.wordmark.scrub.action.run"></button>
+            <button class="btn" id="airegulation-wm-scrub-clear" data-i18n="airegulation.wordmark.scrub.action.clear"></button>
+          </div>
+          <div id="airegulation-wm-scrub-message"></div>
+
+          <div class="card card--result" id="airegulation-wm-scrub-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="airegulation.wordmark.scrub.result.title"></h3>
+            </div>
+            <div class="kv">
+              <div class="kv-item">
+                <span class="kv-key" data-i18n="airegulation.wordmark.scrub.result.changed"></span>
+                <span class="kv-value" id="airegulation-wm-scrub-changed"></span>
+              </div>
+              <div class="kv-item">
+                <span class="kv-key" data-i18n="airegulation.wordmark.scrub.result.total"></span>
+                <span class="kv-value" id="airegulation-wm-scrub-total"></span>
+              </div>
+            </div>
+            <p class="field-hint" data-i18n="airegulation.wordmark.scrub.result.note"></p>
+            <div class="field">
+              <div class="card-head">
+                <h4 class="field-label" data-i18n="airegulation.wordmark.scrub.result.output_label"></h4>
+                <div class="card-actions">
+                  <select class="export-select" id="airegulation-wm-scrub-export-format" data-i18n-aria-label="export.format_label"></select>
+                  <button class="btn btn--small" id="airegulation-wm-scrub-export" data-i18n="export.action"></button>
+                  <button class="btn btn--small" id="airegulation-wm-scrub-copy" data-i18n="airegulation.wordmark.scrub.result.copy"></button>
+                </div>
+              </div>
+              <textarea class="is-output" id="airegulation-wm-scrub-output" rows="6" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rewrite to reduce a word-choice mark (online, disclaimer-gated) -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.wordmark.rewrite.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.wordmark.rewrite.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-rewrite-server" data-i18n="airegulation.wordmark.rewrite.server.label"></label>
+            <input type="text" id="airegulation-wm-rewrite-server" data-i18n-placeholder="airegulation.wordmark.rewrite.server.placeholder">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-rewrite-model" data-i18n="airegulation.wordmark.rewrite.model.label"></label>
+            <input type="text" id="airegulation-wm-rewrite-model" data-i18n-placeholder="airegulation.wordmark.rewrite.model.placeholder">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="airegulation-wm-rewrite-text" data-i18n="airegulation.wordmark.rewrite.text.label"></label>
+            <textarea id="airegulation-wm-rewrite-text" rows="6" data-i18n-placeholder="airegulation.wordmark.rewrite.text.placeholder"></textarea>
+            <input type="file" id="airegulation-wm-rewrite-text-file" data-i18n-aria-label="input.file.label">
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="airegulation-wm-rewrite-run" data-i18n="airegulation.wordmark.rewrite.action.run"></button>
+            <button class="btn" id="airegulation-wm-rewrite-clear" data-i18n="airegulation.wordmark.rewrite.action.clear"></button>
+          </div>
+          <div id="airegulation-wm-rewrite-message"></div>
+
+          <div class="callout" id="airegulation-wm-rewrite-disclaimer" hidden>
+            <h4 class="field-label" data-i18n="wordmark.online.title"></h4>
+            <p class="field-hint" data-i18n="wordmark.online.disclaimer"></p>
+            <div class="btn-row">
+              <button class="btn btn--primary" id="airegulation-wm-rewrite-ack" data-i18n="wordmark.online.acknowledge"></button>
+            </div>
+          </div>
+
+          <div class="card card--result" id="airegulation-wm-rewrite-result" hidden>
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="airegulation.wordmark.rewrite.result.title"></h3>
+            </div>
+            <div id="airegulation-wm-rewrite-notes"></div>
+            <div class="field">
+              <div class="card-head">
+                <h4 class="field-label" data-i18n="airegulation.wordmark.rewrite.result.output_label"></h4>
+                <div class="card-actions">
+                  <select class="export-select" id="airegulation-wm-rewrite-export-format" data-i18n-aria-label="export.format_label"></select>
+                  <button class="btn btn--small" id="airegulation-wm-rewrite-export" data-i18n="export.action"></button>
+                  <button class="btn btn--small" id="airegulation-wm-rewrite-copy" data-i18n="airegulation.wordmark.rewrite.result.copy"></button>
+                </div>
+              </div>
+              <textarea class="is-output" id="airegulation-wm-rewrite-output" rows="6" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI-origin estimate from two local models (embedded model, availability-gated) -->
+        <div class="card module">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="airegulation.wordmark.binoculars.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="airegulation.wordmark.binoculars.intro"></p>
+
+          <div class="callout callout--info" id="airegulation-wm-binoc-unavailable" hidden>
+            <p class="field-hint" data-i18n="airegulation.wordmark.binoculars.unavailable"></p>
+          </div>
+
+          <div id="airegulation-wm-binoc-controls">
+            <div class="field">
+              <label class="field-label" for="airegulation-wm-binoc-observer" data-i18n="airegulation.wordmark.binoculars.observer.label"></label>
+              <input type="text" id="airegulation-wm-binoc-observer" data-i18n-placeholder="airegulation.wordmark.binoculars.observer.placeholder">
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="airegulation-wm-binoc-performer" data-i18n="airegulation.wordmark.binoculars.performer.label"></label>
+              <input type="text" id="airegulation-wm-binoc-performer" data-i18n-placeholder="airegulation.wordmark.binoculars.performer.placeholder">
+            </div>
+
+            <div class="btn-row">
+              <button class="btn" id="airegulation-wm-binoc-load" data-i18n="airegulation.wordmark.binoculars.load.action"></button>
+            </div>
+            <div id="airegulation-wm-binoc-loadstatus"></div>
+
+            <div class="field">
+              <label class="field-label" for="airegulation-wm-binoc-text" data-i18n="airegulation.wordmark.binoculars.text.label"></label>
+              <textarea id="airegulation-wm-binoc-text" rows="6" data-i18n-placeholder="airegulation.wordmark.binoculars.text.placeholder"></textarea>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn--primary" id="airegulation-wm-binoc-analyze" data-i18n="airegulation.wordmark.binoculars.analyze.action"></button>
+              <button class="btn" id="airegulation-wm-binoc-clear" data-i18n="airegulation.wordmark.binoculars.clear.action"></button>
+            </div>
+            <div id="airegulation-wm-binoc-message"></div>
+
+            <div class="card card--result" id="airegulation-wm-binoc-result" hidden>
+              <div class="card-head">
+                <h3 class="card-title" data-i18n="airegulation.wordmark.binoculars.result.title"></h3>
+              </div>
+              <div class="kv">
+                <div class="kv-item">
+                  <span class="kv-key" data-i18n="airegulation.wordmark.binoculars.result.score"></span>
+                  <span class="kv-value" id="airegulation-wm-binoc-score"></span>
+                </div>
+              </div>
+              <p class="callout callout--info" id="airegulation-wm-binoc-verdict" data-i18n="airegulation.wordmark.verdict.probable"></p>
+              <p class="field-hint" data-i18n="airegulation.wordmark.binoculars.result.note"></p>
+            </div>
+          </div>
+        </div>
+
+        </div>
+      </section>
+
+      <!-- ── Files ───────────────────────────────────────── -->
+      <section class="view" id="view-files" role="tabpanel" aria-labelledby="tab-files" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="files.title"></h2>
+          <p class="view-intro" data-i18n="files.intro"></p>
+        </div>
+
+        <div class="card">
+          <p class="card-hint" data-i18n="files.disclaimer"></p>
+        </div>
+
+        <!-- Pick a document -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.pick.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="files.pick.intro"></p>
+
+          <div class="field">
+            <label class="field-label" for="files-input" data-i18n="files.pick.file.label"></label>
+            <input type="file" id="files-input">
+            <span class="field-hint" data-i18n="files.pick.file.hint"></span>
+          </div>
+          <div class="kv" id="files-picked"></div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="files-inspect-run" data-i18n="files.inspect.action.run"></button>
+            <button class="btn" id="files-clear" data-i18n="files.action.clear"></button>
+          </div>
+          <div id="files-message"></div>
+        </div>
+
+        <!-- Inspect result -->
+        <div class="card card--result" id="files-inspect-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.inspect.result.title"></h3>
+          </div>
+          <div id="files-inspect-verdict"></div>
+          <div class="kv" id="files-inspect-summary"></div>
+
+          <h4 class="field-label" data-i18n="files.inspect.result.classes_label"></h4>
+          <p class="field-hint" data-i18n="files.inspect.result.classes_hint"></p>
+          <div class="kv" id="files-inspect-classes"></div>
+
+          <h4 class="field-label" data-i18n="files.inspect.result.other_label"></h4>
+          <p class="field-hint" data-i18n="files.inspect.result.other_hint"></p>
+          <div class="kv" id="files-inspect-other"></div>
+
+          <h4 class="field-label" data-i18n="files.inspect.result.notes_label"></h4>
+          <div class="stack" id="files-inspect-notes"></div>
+        </div>
+
+        <!-- Clean -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.clean.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="files.clean.intro"></p>
+
+          <div class="field">
+            <span class="field-label" data-i18n="files.clean.classes.label"></span>
+            <span class="field-hint" data-i18n="files.clean.classes.hint"></span>
+            <div class="chip-grid" id="files-clean-classes">
+              <label class="chip">
+                <input type="checkbox" class="files-class" data-class="zero_width" checked>
+                <div>
+                  <div class="chip-name" data-i18n="files.class.zero_width"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="files-class" data-class="homoglyph" checked>
+                <div>
+                  <div class="chip-name" data-i18n="files.class.homoglyph"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="files-class" data-class="bidi" checked>
+                <div>
+                  <div class="chip-name" data-i18n="files.class.bidi"></div>
+                </div>
+              </label>
+              <label class="chip">
+                <input type="checkbox" class="files-class" data-class="whitespace_var" checked>
+                <div>
+                  <div class="chip-name" data-i18n="files.class.whitespace_var"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="files-clean-run" data-i18n="files.clean.action.run"></button>
+          </div>
+          <div id="files-clean-message"></div>
+        </div>
+
+        <!-- Clean result -->
+        <div class="card card--result" id="files-clean-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.clean.result.title"></h3>
+          </div>
+          <div id="files-clean-altered"></div>
+          <div class="kv" id="files-clean-removed"></div>
+
+          <h4 class="field-label" data-i18n="files.clean.result.residual_label"></h4>
+          <div class="stack" id="files-clean-residual"></div>
+
+          <div class="field">
+            <div class="btn-row">
+              <button class="btn btn--primary" id="files-clean-download" data-i18n="files.clean.result.download"></button>
+            </div>
+            <span class="field-hint" data-i18n="files.clean.result.download_hint"></span>
+          </div>
+
+          <div class="field" id="files-clean-text-field" hidden>
+            <div class="card-head">
+              <h4 class="field-label" data-i18n="files.clean.result.cleaned_label"></h4>
+              <div class="card-actions">
+                <button class="btn btn--small" id="files-clean-copy" data-i18n="files.clean.result.copy"></button>
+              </div>
+            </div>
+            <textarea class="is-output" id="files-clean-output" rows="6" readonly></textarea>
+          </div>
+
+          <p class="field-hint" id="files-clean-container-note" data-i18n="files.clean.result.container_note" hidden></p>
+        </div>
+
+        <!-- Strip metadata -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.strip.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="files.strip.intro"></p>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="files-strip-run" data-i18n="files.strip.action.run"></button>
+          </div>
+          <div id="files-strip-message"></div>
+        </div>
+
+        <!-- Strip result -->
+        <div class="card card--result" id="files-strip-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.strip.result.title"></h3>
+          </div>
+          <div id="files-strip-altered"></div>
+
+          <div class="field">
+            <div class="btn-row">
+              <button class="btn btn--primary" id="files-strip-download" data-i18n="files.strip.download"></button>
+            </div>
+            <span class="field-hint" data-i18n="files.strip.download_hint"></span>
+          </div>
+        </div>
+
+        <!-- Pristine clean -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.pristine.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="files.pristine.intro"></p>
+
+          <div class="callout callout--warning" data-i18n="files.pristine.tradeoff"></div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="files-pristine-run" data-i18n="files.pristine.action.run"></button>
+          </div>
+          <div id="files-pristine-message"></div>
+        </div>
+
+        <!-- Pristine result -->
+        <div class="card card--result" id="files-pristine-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="files.pristine.result.title"></h3>
+          </div>
+          <div id="files-pristine-altered"></div>
+
+          <h4 class="field-label" data-i18n="files.pristine.result.removed_label"></h4>
+          <div class="kv" id="files-pristine-removed"></div>
+
+          <h4 class="field-label" data-i18n="files.pristine.result.notes_label"></h4>
+          <div class="stack" id="files-pristine-notes"></div>
+
+          <div class="field">
+            <div class="btn-row">
+              <button class="btn btn--primary" id="files-pristine-download" data-i18n="files.pristine.download"></button>
+            </div>
+            <span class="field-hint" data-i18n="files.pristine.download_hint"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Decoder (traced reveal) ─────────────────────── -->
+      <section class="view" id="view-decoder" role="tabpanel" aria-labelledby="tab-decoder" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="decoder.title"></h2>
+          <p class="view-intro" data-i18n="decoder.intro"></p>
+        </div>
+
+        <div class="card">
+          <div class="field">
+            <label class="field-label" for="decoder-text" data-i18n="decoder.text.label"></label>
+            <textarea id="decoder-text" rows="8" data-i18n-placeholder="decoder.text.placeholder"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="decoder-file" data-i18n="decoder.file.label"></label>
+            <input type="file" id="decoder-file">
+            <span class="field-hint" data-i18n="decoder.file.hint"></span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="decoder-password" data-i18n="decoder.password.label"></label>
+            <input type="password" id="decoder-password" data-i18n-placeholder="decoder.password.placeholder">
+            <span class="field-hint" data-i18n="decoder.password.hint"></span>
+          </div>
+          <div class="field">
+            <label class="field-label">
+              <input type="checkbox" id="decoder-recovery">
+              <span data-i18n="decoder.recovery.label"></span>
+            </label>
+            <span class="field-hint" data-i18n="decoder.recovery.hint"></span>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="decoder-run" data-i18n="decoder.action.run"></button>
+            <button class="btn" id="decoder-clear" data-i18n="decoder.action.clear"></button>
+          </div>
+          <div id="decoder-message"></div>
+          <div id="decoder-recovery-prompt"></div>
+        </div>
+
+        <div class="card card--result" id="decoder-payload-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="decoder.payload.title"></h3>
+            <div class="card-actions">
+              <span class="badge" id="decoder-outcome-badge"></span>
+              <select class="export-select" id="decoder-export-format" data-i18n-aria-label="export.format_label"></select>
+              <button class="btn btn--small" id="decoder-export" data-i18n="export.action"></button>
+              <button class="btn btn--small" id="decoder-copy" data-i18n="action.copy"></button>
+            </div>
+          </div>
+          <div id="decoder-payload-note"></div>
+          <textarea class="is-output" id="decoder-output" readonly></textarea>
+          <div class="kv" id="decoder-summary"></div>
+          <div id="decoder-warnings"></div>
+        </div>
+
+        <div class="card card--result" id="decoder-trace-card" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="decoder.trace.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="decoder.trace.intro"></p>
+          <div class="wave-trace" id="decoder-waves"></div>
+          <h4 class="field-label" data-i18n="decoder.oracle.legend_title"></h4>
+          <div class="stack--tight" id="decoder-oracle-legend"></div>
+          <details>
+            <summary data-i18n="action.details"></summary>
+            <pre id="decoder-json"></pre>
+          </details>
+        </div>
+      </section>
+
+      <!-- ── Settings ────────────────────────────────────── -->
+      <!-- The runtime engine configuration (backlog UI-settings): the
+           per-mission planning densities and the passphrase-protection
+           parameters. Language and theme live in the masthead and are not
+           repeated here. Every value is validated on write by the core's own
+           setter through the settings_read / settings_update commands, the
+           same path the MCP and REST surfaces use. -->
+      <section class="view" id="view-settings" role="tabpanel" aria-labelledby="tab-settings" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="settings.title"></h2>
+          <p class="view-intro" data-i18n="settings.intro"></p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="settings.scope.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="settings.scope.body"></p>
+        </div>
+
+        <div id="settings-message"></div>
+
+        <!-- Planning densities -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="settings.density.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="settings.density.intro"></p>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="settings-density-conceal" data-i18n="settings.density.conceal.label"></label>
+              <input type="number" id="settings-density-conceal" min="0.05" max="0.6" step="0.01">
+              <span class="field-hint" data-i18n="settings.density.conceal.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="settings-density-sign" data-i18n="settings.density.sign.label"></label>
+              <input type="number" id="settings-density-sign" min="0.1" max="0.9" step="0.01">
+              <span class="field-hint" data-i18n="settings.density.sign.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="settings-density-mark" data-i18n="settings.density.mark.label"></label>
+              <input type="number" id="settings-density-mark" min="0.2" max="1" step="0.01">
+              <span class="field-hint" data-i18n="settings.density.mark.hint"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passphrase protection -->
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="settings.crypto.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="settings.crypto.intro"></p>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="settings-crypto-memory" data-i18n="settings.crypto.memory.label"></label>
+              <input type="number" id="settings-crypto-memory" min="8192" max="1048576" step="1024">
+              <span class="field-hint" data-i18n="settings.crypto.memory.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="settings-crypto-passes" data-i18n="settings.crypto.passes.label"></label>
+              <input type="number" id="settings-crypto-passes" min="1" max="10" step="1">
+              <span class="field-hint" data-i18n="settings.crypto.passes.hint"></span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="settings-crypto-parallelism" data-i18n="settings.crypto.parallelism.label"></label>
+              <input type="number" id="settings-crypto-parallelism" min="1" max="16" step="1">
+              <span class="field-hint" data-i18n="settings.crypto.parallelism.hint"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="settings-cipher" data-i18n="settings.crypto.cipher.label"></label>
+            <select id="settings-cipher"></select>
+            <span class="field-hint" data-i18n="settings.crypto.cipher.hint"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="btn-row">
+            <button class="btn btn--primary" id="settings-apply" data-i18n="settings.action.apply"></button>
+            <button class="btn" id="settings-reload" data-i18n="settings.action.reload"></button>
+          </div>
+        </div>
+
+        <div class="card card--result" id="settings-result" hidden>
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="settings.result.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="settings.result.intro"></p>
+          <div class="kv" id="settings-readback"></div>
+          <details>
+            <summary data-i18n="action.details"></summary>
+            <pre id="settings-json"></pre>
+          </details>
+        </div>
+      </section>
+
+      <!-- ── About ───────────────────────────────────────── -->
+      <section class="view" id="view-restmcp" role="tabpanel" aria-labelledby="tab-restmcp" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="restmcp.title"></h2>
+        </div>
+        <p class="view-intro" data-i18n="restmcp.intro"></p>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="restmcp.server.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="restmcp.server.hint"></p>
+          <div class="kv" id="restmcp-summary"></div>
+          <label class="field-label" for="restmcp-snippet" data-i18n="restmcp.snippet.label"></label>
+          <textarea class="is-output" id="restmcp-snippet" rows="6" readonly></textarea>
+          <div class="btn-row">
+            <button class="btn btn--small" id="restmcp-copy-snippet" data-i18n="action.copy"></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="restmcp.clients.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="restmcp.clients.hint"></p>
+          <div class="btn-row">
+            <button class="btn btn--primary" id="restmcp-configure" data-i18n="restmcp.clients.configure"></button>
+          </div>
+          <div id="restmcp-clients"></div>
+          <div id="restmcp-message"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="restmcp.rest.title"></h3>
+          </div>
+          <p class="card-hint" data-i18n="restmcp.rest.hint"></p>
+          <div class="kv" id="restmcp-rest"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-about" role="tabpanel" aria-labelledby="tab-about" tabindex="-1" hidden>
+        <div class="view-head">
+          <h2 class="view-title" data-i18n="about.title"></h2>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="about.product.title"></h3>
+          </div>
+          <p class="about-body" data-i18n="about.product.body"></p>
+          <h4 class="field-label" data-i18n="about.capabilities.title"></h4>
+          <ul class="bullets stack--tight">
+            <li data-i18n="about.capabilities.item1"></li>
+            <li data-i18n="about.capabilities.item2"></li>
+            <li data-i18n="about.capabilities.item3"></li>
+            <li data-i18n="about.capabilities.item4"></li>
+            <li data-i18n="about.capabilities.item5"></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head" style="flex-direction:column;align-items:center;gap:10px;text-align:center">
+            <img src="hm.svg" alt="" aria-hidden="true" style="width:76px;height:76px">
+            <h3 class="card-title" data-i18n="about.publisher.title"></h3>
+          </div>
+          <p class="about-body" data-i18n="about.publisher.body"></p>
+
+          <h4 class="field-label" data-i18n="about.mission.title"></h4>
+          <p class="about-body" data-i18n="about.mission.intro"></p>
+          <ul class="bullets stack--tight">
+            <li data-i18n="about.mission.item1"></li>
+            <li data-i18n="about.mission.item2"></li>
+            <li data-i18n="about.mission.item3"></li>
+            <li data-i18n="about.mission.item4"></li>
+            <li data-i18n="about.mission.item5"></li>
+          </ul>
+
+          <h4 class="field-label" data-i18n="about.vision.title"></h4>
+          <p class="about-body" data-i18n="about.vision.body"></p>
+
+          <h4 class="field-label" data-i18n="about.record.title"></h4>
+          <p class="about-body" data-i18n="about.record.body"></p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="about.ethics.title"></h3>
+          </div>
+          <blockquote class="about-quote" data-i18n="about.ethics.quote"></blockquote>
+          <p class="about-body" data-i18n="about.ethics.body"></p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="about.contact.title"></h3>
+          </div>
+          <p class="about-body" data-i18n="about.contact.body"></p>
+          <div class="kv">
+            <div class="kv-item">
+              <span class="kv-key" data-i18n="about.contact.email_label"></span>
+              <span class="kv-value" data-i18n="about.contact.email_value"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title" data-i18n="about.build.title"></h3>
+          </div>
+          <div class="kv" id="about-build"></div>
+          <p class="field-hint" data-i18n="about.legal.notice"></p>
+          <p class="field-hint" data-i18n="about.legal.copyright"></p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="statusbar" role="status" aria-live="polite" aria-atomic="true">
+    <span class="statusbar-muted" data-i18n="app.name"></span>
+    <span class="statusbar-muted" id="status-version"></span>
+    <span class="statusbar-spacer" id="status-message"></span>
+  </footer>
+
+</div>
+
+<div class="bootstrap-failure" id="bootstrap-failure" hidden>
+  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
+       stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+    <path d="M12 3L1.5 21h21L12 3z"/><path d="M12 10v5"/><path d="M12 18h.01"/>
+  </svg>
+  <pre id="bootstrap-failure-detail"></pre>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 30" width="290" height="30" role="img" aria-label="PLATFORMS: Windows · Linux · macOS">
+  <title>PLATFORMS: Windows · Linux · macOS</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient>
+  <clipPath id="r"><rect width="290" height="30" rx="6"/></clipPath></defs>
+  <g clip-path="url(#r)">
+    <rect width="90" height="30" fill="#150C26"/>
+    <rect x="90" width="200" height="30" fill="url(#g)"/>
+  </g>
+  <text x="45" y="19.5" text-anchor="middle" font-family="'IBM Plex Mono','Consolas',monospace" font-size="11.5" letter-spacing="1" fill="#B9B3D6">PLATFORMS</text>
+  <text x="190" y="19.5" text-anchor="middle" font-family="'IBM Plex Mono','Consolas',monospace" font-size="11.5" font-weight="600" fill="#FFFFFF">Windows · Linux · macOS</text>
+</svg>

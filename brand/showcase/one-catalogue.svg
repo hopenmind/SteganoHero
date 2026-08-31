@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="One catalogue, four surfaces">
+  <title>One catalogue, four surfaces</title>
+  <desc>Desktop, command line, assistant server, and HTTP server dispatch through one validated command catalogue, so a field, a range, or a refusal is identical on every surface.</desc>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6F63D8"/><stop offset="1" stop-color="#ED30B3"/></linearGradient></defs>
+  <rect x="2" y="2" width="356" height="236" rx="18" fill="#150C26" stroke="url(#g)" stroke-width="2"/>
+  <rect x="24" y="22" width="52" height="4" rx="2" fill="url(#g)"/>
+  <g transform="translate(180 74)">
+    <!-- spokes -->
+    <g stroke="#6F63D8" stroke-width="2">
+      <line x1="0" y1="0" x2="-52" y2="-26"/>
+      <line x1="0" y1="0" x2="52" y2="-26"/>
+      <line x1="0" y1="0" x2="-52" y2="26"/>
+      <line x1="0" y1="0" x2="52" y2="26"/>
+    </g>
+    <!-- four surfaces -->
+    <g fill="#211B33" stroke="url(#g)" stroke-width="2">
+      <rect x="-70" y="-38" width="36" height="24" rx="5"/>
+      <rect x="34" y="-38" width="36" height="24" rx="5"/>
+      <rect x="-70" y="14" width="36" height="24" rx="5"/>
+      <rect x="34" y="14" width="36" height="24" rx="5"/>
+    </g>
+    <!-- one catalogue at the hub -->
+    <circle cx="0" cy="0" r="16" fill="url(#g)"/>
+  </g>
+  <text x="180" y="158" text-anchor="middle" fill="#F1EEFF" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="23">One catalogue, four ways in</text>
+  <text x="180" y="188" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">The same fields, ranges, and refusals</text>
+  <text x="180" y="210" text-anchor="middle" fill="#B7B0D8" font-family="'Segoe UI',system-ui,sans-serif" font-size="15">on every surface.</text>
+</svg>

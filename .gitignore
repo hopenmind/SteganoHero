@@ -1,0 +1,33 @@
+# Rust build artifacts (hundreds of MB, never committed)
+target/
+**/target/
+
+# Python bytecode from the frozen v1 reference tree
+__pycache__/
+*.pyc
+*.pyo
+
+# Large binary archives of old work, never source, never pushed (multi-GB blobs)
+Archive Stegano Hero.zip
+*.7z
+*.zip
+
+# Node and OS noise
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Codebase index artifact (dev aid, rebuilt on demand, not source)
+.codebase-memory/
+
+# Runtime lock, not source
+.claude/scheduled_tasks.lock
+
+# Built binaries, reproducible via cargo build --release
+/dist/
+
+# Not for publication: design/conception docs, deployment infra, working files
+docs/
+deploy/
+/logo.svg
+/logo.png
